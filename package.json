@@ -12,6 +12,7 @@
     "test:staged": "npm t -- --findRelatedTests",
     "test:watch": "npm t -- --watch",
     "test:coverage": "npm t -- --coverage",
+    "test:integration": "npm t -- -c ./jest.integration.config.js",
     "prepare": "husky install"
   },
   "repository": {
