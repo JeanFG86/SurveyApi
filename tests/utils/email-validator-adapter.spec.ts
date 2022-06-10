@@ -6,6 +6,7 @@ jest.mock('validator')
 describe('EmailValidatorAdapter', () => {
   let sut: EmailValidatorAdapter
   let fakeValidator: jest.Mocked<typeof validator>
+
   beforeAll(() => {
     fakeValidator = validator as jest.Mocked<typeof validator>
     fakeValidator.isEmail.mockReturnValue(true)
