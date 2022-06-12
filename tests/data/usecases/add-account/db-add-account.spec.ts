@@ -24,4 +24,15 @@ describe('DbAddAccount Usecase', () => {
     await sut.add(accountData)
     expect(encryptSpy).toHaveBeenCalledWith('valid_password')
   })
+
+  it('Should throw Encrypter throws', async () => {
+    encrypt.encrypt.mockRejectedValueOnce(new Error())
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password'
+    }
+    const promise = sut.add(accountData)
+    await expect(promise).rejects.toThrow()
+  })
 })
