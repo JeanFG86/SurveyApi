@@ -16,9 +16,17 @@ describe('Bcrypt Adapter', () => {
     sut = new BcryptAdapter(salt)
   })
 
-  it('Should call bcrypt with correct value', async () => {
+  it('Should call bcrypt with correct values', async () => {
     await sut.encrypt('any_value')
 
     expect(fakeBcrypt.hash).toHaveBeenCalledWith('any_value', salt)
+  })
+
+  it('Should return a hash on success', async () => {
+    fakeBcrypt.hash.mockImplementationOnce(() => 'hash')
+
+    const hash = await sut.encrypt('any_value')
+
+    expect(hash).toBe('hash')
   })
 })
