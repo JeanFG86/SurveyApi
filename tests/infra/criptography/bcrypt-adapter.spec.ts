@@ -29,4 +29,12 @@ describe('Bcrypt Adapter', () => {
 
     expect(hash).toBe('hash')
   })
+
+  it('Should throw if bcrypt throws', async () => {
+    fakeBcrypt.hash.mockImplementationOnce(() => { throw new Error('bcrypt_error') })
+
+    const promise = sut.encrypt('any_value')
+
+    await expect(promise).rejects.toThrow(new Error('bcrypt_error'))
+  })
 })
