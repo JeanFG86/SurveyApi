@@ -58,4 +58,15 @@ describe('DbAddAccount Usecase', () => {
       password: 'hashed_password'
     })
   })
+
+  it('Should throw AddAccountRepository throws', async () => {
+    fakeAccount.add.mockRejectedValueOnce(new Error())
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password'
+    }
+    const promise = sut.add(accountData)
+    await expect(promise).rejects.toThrow()
+  })
 })
