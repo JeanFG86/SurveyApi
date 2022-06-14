@@ -2,25 +2,19 @@ import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 
 describe('Account Mongo Repository', () => {
-  // let db: any
   let sut: AccountMongoRepository
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL!)
-    /*
-    connection = await MongoClient.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
-    */
-    // db = await connection.db(globalThis.__MONGO_DB_NAME__)
   })
 
   afterAll(async () => {
     await MongoHelper.disconnect()
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
     sut = new AccountMongoRepository()
+    const accontCollection = MongoHelper.getCollection('accounts')
+    await accontCollection.deleteMany({})
   })
 
   it('Should return an account on success', async () => {
