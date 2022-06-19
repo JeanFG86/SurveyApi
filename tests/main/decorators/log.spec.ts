@@ -23,7 +23,7 @@ describe('LogController Decorator', () => {
     fakeController = mock()
     fakeController.handle.mockResolvedValue(ok(fakeAccount))
     fakeLogErrorRepository = mock()
-    fakeLogErrorRepository.log.mockResolvedValue(new Promise(resolve => resolve()))
+    fakeLogErrorRepository.logError.mockResolvedValue(new Promise(resolve => resolve()))
     fakeRequest = {
       body: {
         name: 'any_name',
@@ -56,7 +56,7 @@ describe('LogController Decorator', () => {
 
   it('Should call LogErrorRepository with correct error if controller returns a server error', async () => {
     const error = serverError(fakeError)
-    const logSpy = jest.spyOn(fakeLogErrorRepository, 'log')
+    const logSpy = jest.spyOn(fakeLogErrorRepository, 'logError')
     fakeController.handle.mockResolvedValueOnce(error)
 
     await sut.handle(fakeRequest)
