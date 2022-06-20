@@ -19,10 +19,10 @@ export class AccountMongoRepository implements AddAccountRepository {
       return accountReturn
     }
     return {
-      id: '',
-      name: '',
-      email: '',
-      password: ''
+      id: ' ',
+      name: ' ',
+      email: ' ',
+      password: ' '
     }
   }
 }
