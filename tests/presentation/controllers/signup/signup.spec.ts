@@ -1,6 +1,6 @@
 import { AccountModel } from '@/domain/models'
 import { AddAccount } from '@/domain/usecases'
-import { SignUpController } from '@/presentation/controllers'
+import { SignUpController } from '@/presentation/controllers/signup'
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors'
 import { EmailValidator, HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
