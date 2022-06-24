@@ -4,5 +4,5 @@ export interface Authentication{
 
 export namespace Authentication{
   export type Input = {email: string, password: string}
-  export type OutPut = {token: string}
+  export type OutPut = {token: string | undefined}
 }

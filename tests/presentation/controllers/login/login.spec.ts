@@ -1,7 +1,7 @@
 import { Authentication } from '@/domain/usecases'
 import { LoginController } from '@/presentation/controllers/login'
 import { InvalidParamError, MissingParamError } from '@/presentation/errors'
-import { badRequest, serverError } from '@/presentation/helpers'
+import { badRequest, serverError, unauthorized } from '@/presentation/helpers'
 import { EmailValidator, HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 
@@ -83,5 +83,13 @@ describe('Login Controller', () => {
     await sut.handle(fakeRequest)
 
     expect(authSpy).toHaveBeenCalledWith({ email: 'any_email@mail.com', password: 'any_password' })
+  })
+
+  it('Should return 401 if invalid credentials are provided', async () => {
+    fakeAuthentication.auth.mockResolvedValueOnce({ token: undefined })
+
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(unauthorized())
   })
 })
