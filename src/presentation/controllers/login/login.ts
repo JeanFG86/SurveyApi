@@ -28,6 +28,6 @@ export class LoginController implements Controller {
       return ok({ accessToken: token })
     } catch (error) {
       return serverError(new Error())
-    }
+    }// teste
   }
 }
