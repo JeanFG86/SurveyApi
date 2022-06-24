@@ -1,3 +1,4 @@
+import { Authentication } from '@/domain/usecases'
 import { LoginController } from '@/presentation/controllers/login'
 import { InvalidParamError, MissingParamError } from '@/presentation/errors'
 import { badRequest, serverError } from '@/presentation/helpers'
@@ -8,19 +9,22 @@ describe('Login Controller', () => {
   let sut: LoginController
   let emailValidator: MockProxy<EmailValidator>
   let fakeRequest: MockProxy<HttpRequest>
+  let fakeAuthentication: MockProxy<Authentication>
   beforeAll(() => {
     emailValidator = mock()
     emailValidator.isValid.mockReturnValue(true)
+    fakeAuthentication = mock()
     fakeRequest = {
       body: {
         email: 'any_email@mail.com',
         password: 'any_password'
       }
     }
+    fakeAuthentication.auth.mockResolvedValue({ token: 'any_token' })
   })
 
   beforeEach(() => {
-    sut = new LoginController(emailValidator)
+    sut = new LoginController(emailValidator, fakeAuthentication)
   })
 
   it('Should return 400 if no email is provided', async () => {
@@ -71,5 +75,13 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(fakeRequest)
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  it('Should call Authentication with correct values', async () => {
+    const authSpy = jest.spyOn(fakeAuthentication, 'auth')
+
+    await sut.handle(fakeRequest)
+
+    expect(authSpy).toHaveBeenCalledWith({ email: 'any_email@mail.com', password: 'any_password' })
   })
 })
