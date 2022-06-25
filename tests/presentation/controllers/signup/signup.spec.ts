@@ -5,16 +5,20 @@ import { InvalidParamError, MissingParamError, ServerError } from '@/presentatio
 import { EmailValidator, HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { ok, serverError, badRequest } from '@/presentation/helpers'
+import { Validation } from '@/presentation/helpers/validators'
 
 describe('SignUp Controller', () => {
   let sut: SignUpController
   let emailValidator: MockProxy<EmailValidator>
+  let fakeValidation: MockProxy<Validation>
   let addAccount: MockProxy<AddAccount>
   let fakeRequest: MockProxy<HttpRequest>
   let fakeAccount: MockProxy<AccountModel>
   beforeAll(() => {
     emailValidator = mock()
     emailValidator.isValid.mockReturnValue(true)
+    fakeValidation = mock()
+    fakeValidation.validate.mockReturnValue(undefined)
     addAccount = mock()
     fakeAccount = {
       id: 'any_id',
@@ -34,7 +38,7 @@ describe('SignUp Controller', () => {
   })
 
   beforeEach(() => {
-    sut = new SignUpController(emailValidator, addAccount)
+    sut = new SignUpController(emailValidator, addAccount, fakeValidation)
   })
 
   it('should return 400 if no name is provided', async () => {
@@ -174,5 +178,12 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toEqual(ok(fakeAccount))
+  })
+
+  it('should call Validation with correct values', async () => {
+    const validateSpy = jest.spyOn(fakeValidation, 'validate')
+
+    await sut.handle(fakeRequest)
+    expect(validateSpy).toHaveBeenCalledWith(fakeRequest.body)
   })
 })
