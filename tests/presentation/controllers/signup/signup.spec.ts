@@ -186,4 +186,12 @@ describe('SignUp Controller', () => {
     await sut.handle(fakeRequest)
     expect(validateSpy).toHaveBeenCalledWith(fakeRequest.body)
   })
+
+  it('should return 400 if validation fails', async () => {
+    fakeValidation.validate.mockReturnValueOnce(new MissingParamError('any_field'))
+
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
+  })
 })
