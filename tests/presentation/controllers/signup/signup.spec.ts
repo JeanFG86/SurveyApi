@@ -1,22 +1,19 @@
 import { AccountModel } from '@/domain/models'
 import { AddAccount } from '@/domain/usecases'
 import { SignUpController } from '@/presentation/controllers/signup'
-import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors'
-import { EmailValidator, HttpRequest } from '@/presentation/protocols'
+import { MissingParamError, ServerError } from '@/presentation/errors'
+import { HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { ok, serverError, badRequest } from '@/presentation/helpers'
 import { Validation } from '@/presentation/helpers/validators'
 
 describe('SignUp Controller', () => {
   let sut: SignUpController
-  let emailValidator: MockProxy<EmailValidator>
   let fakeValidation: MockProxy<Validation>
   let addAccount: MockProxy<AddAccount>
   let fakeRequest: MockProxy<HttpRequest>
   let fakeAccount: MockProxy<AccountModel>
   beforeAll(() => {
-    emailValidator = mock()
-    emailValidator.isValid.mockReturnValue(true)
     fakeValidation = mock()
     fakeValidation.validate.mockReturnValue(undefined)
     addAccount = mock()
@@ -38,41 +35,7 @@ describe('SignUp Controller', () => {
   })
 
   beforeEach(() => {
-    sut = new SignUpController(emailValidator, addAccount, fakeValidation)
-  })
-
-  it('should return 400 if no an invalid email is provided', async () => {
-    emailValidator.isValid.mockReturnValueOnce(false)
-
-    const httpResponse = await sut.handle(fakeRequest)
-
-    expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')))
-  })
-
-  it('should call EmailValidator with correct email', async () => {
-    const isValidSpy = jest.spyOn(emailValidator, 'isValid')
-
-    await sut.handle(fakeRequest)
-
-    expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
-  })
-
-  it('should return 500 if email validator thows', async () => {
-    jest.spyOn(emailValidator, 'isValid').mockImplementationOnce(() => {
-      throw new Error()
-    })
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual(serverError(new ServerError(undefined)))
+    sut = new SignUpController(addAccount, fakeValidation)
   })
 
   it('should return 500 if AddAccount thows', async () => {
