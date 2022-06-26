@@ -41,21 +41,6 @@ describe('SignUp Controller', () => {
     sut = new SignUpController(emailValidator, addAccount, fakeValidation)
   })
 
-  it('should return 400 if no password confirmation is fails', async () => {
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'invalid_password'
-      }
-    }
-
-    const httpResponse = await sut.handle(httpRequest)
-
-    expect(httpResponse).toEqual(badRequest(new InvalidParamError('passwordConfirmation')))
-  })
-
   it('should return 400 if no an invalid email is provided', async () => {
     emailValidator.isValid.mockReturnValueOnce(false)
 
