@@ -20,6 +20,12 @@ describe('Validation Composite', () => {
     sut = new ValidationComposite(validations)
   })
 
+  it('Should return undefined if all validators return undefined', () => {
+    const error = sut.validate({ field: 'any_value' })
+
+    expect(error).toBeUndefined()
+  })
+
   it('Should return an error if any validation fails', () => {
     fakeValidation1.validate.mockReturnValueOnce(new MissingParamError('field'))
     const error = sut.validate({ field: 'any_value' })
