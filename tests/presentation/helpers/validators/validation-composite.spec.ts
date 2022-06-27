@@ -4,17 +4,32 @@ import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('Validation Composite', () => {
   let sut: ValidationComposite
-  let fakeValidation: MockProxy<Validation>
+  let fakeValidation1: MockProxy<Validation>
+  let fakeValidation2: MockProxy<Validation>
+  let validations: Validation[]
 
   beforeAll(() => {
-    fakeValidation = mock()
-    fakeValidation.validate.mockReturnValue(new MissingParamError('field'))
+    fakeValidation1 = mock()
+    fakeValidation1.validate.mockReturnValue(undefined)
+    fakeValidation2 = mock()
+    fakeValidation2.validate.mockReturnValue(undefined)
+    validations = [fakeValidation1, fakeValidation2]
   })
 
   beforeEach(() => {
-    sut = new ValidationComposite([fakeValidation])
+    sut = new ValidationComposite(validations)
   })
+
   it('Should return an error if any validation fails', () => {
+    fakeValidation1.validate.mockReturnValueOnce(new MissingParamError('field'))
+    const error = sut.validate({ field: 'any_value' })
+
+    expect(error).toEqual(new MissingParamError('field'))
+  })
+
+  it('Should return the first error if more then one validation fails', () => {
+    fakeValidation1.validate.mockReturnValueOnce(new MissingParamError('field'))
+    fakeValidation2.validate.mockReturnValueOnce(new MissingParamError('field2'))
     const error = sut.validate({ field: 'any_value' })
 
     expect(error).toEqual(new MissingParamError('field'))
