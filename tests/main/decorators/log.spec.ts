@@ -1,7 +1,7 @@
 import { LogErrorRepository } from '@/data/protocols'
 import { AccountModel } from '@/domain/models'
 import { LogControllerDecorator } from '@/main/decorators'
-import { ok, serverError } from '@/presentation/helpers'
+import { ok, serverError } from '@/presentation/helpers/http'
 import { Controller, HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 

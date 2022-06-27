@@ -4,7 +4,7 @@ import { SignUpController } from '@/presentation/controllers/signup'
 import { MissingParamError, ServerError } from '@/presentation/errors'
 import { HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
-import { ok, serverError, badRequest } from '@/presentation/helpers'
+import { ok, serverError, badRequest } from '@/presentation/helpers/http'
 import { Validation } from '@/presentation/helpers/validators'
 
 describe('SignUp Controller', () => {
