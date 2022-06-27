@@ -7,6 +7,7 @@ describe('RequiredField Validation', () => {
   beforeEach(() => {
     sut = new RequiredFieldValidation('field')
   })
+
   it('Should return a MissingParamError if validation fails', () => {
     const error = sut.validate({ name: 'any_name' })
 
