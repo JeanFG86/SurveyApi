@@ -27,4 +27,15 @@ describe('DbAuthentication UseCase', () => {
 
     expect(fakeLoadAccount.load).toHaveBeenCalledWith('any_email@mail.com')
   })
+
+  it('Should throw if LoadAccountByEmailRepository thorws', async () => {
+    fakeLoadAccount.load.mockRejectedValueOnce(new Error())
+
+    const promise = sut.auth({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+
+    await expect(promise).rejects.toThrow()
+  })
 })
