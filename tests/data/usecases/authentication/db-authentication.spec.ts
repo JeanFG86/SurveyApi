@@ -45,15 +45,25 @@ describe('DbAuthentication UseCase', () => {
 
   it('Should return undefined if LoadAccountByEmailRepository returns undefined', async () => {
     fakeLoadAccount.load.mockResolvedValueOnce(null)
+
     const accessToken = await sut.auth(fakeAuthentication)
 
     expect(accessToken.token).toBeUndefined()
   })
 
-  it('Should call HashComparer with correct password', async () => {
+  it('Should call HashComparer with correct values', async () => {
     const conpareSpy = jest.spyOn(fakeHashCompare, 'compare')
+
     await sut.auth(fakeAuthentication)
 
     expect(conpareSpy).toHaveBeenLastCalledWith({ value: 'any_password', hash: 'hashed_password' })
+  })
+
+  it('Should throw if HashComparer thorws', async () => {
+    fakeHashCompare.compare.mockRejectedValueOnce(new Error())
+
+    const promise = sut.auth(fakeAuthentication)
+
+    await expect(promise).rejects.toThrow()
   })
 })
