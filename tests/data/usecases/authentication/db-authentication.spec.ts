@@ -89,4 +89,12 @@ describe('DbAuthentication UseCase', () => {
 
     expect(generateSpy).toHaveBeenLastCalledWith({ id: 'any_id' })
   })
+
+  it('Should throw if TokenGenerator thorws', async () => {
+    fakeTokenGenerator.generate.mockRejectedValueOnce(new Error())
+
+    const promise = sut.auth(fakeAuthentication)
+
+    await expect(promise).rejects.toThrow()
+  })
 })
