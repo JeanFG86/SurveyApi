@@ -66,4 +66,12 @@ describe('DbAuthentication UseCase', () => {
 
     await expect(promise).rejects.toThrow()
   })
+
+  it('Should return undefined if HashComparer returns false', async () => {
+    fakeHashCompare.compare.mockResolvedValueOnce(false)
+
+    const accessToken = await sut.auth(fakeAuthentication)
+
+    expect(accessToken.token).toBeUndefined()
+  })
 })
