@@ -1,4 +1,4 @@
-import { HashComparer } from '@/data/protocols/criptograpfy'
+import { HashComparer, TokenGenerator } from '@/data/protocols/criptograpfy'
 import { LoadAccountByEmailRepository } from '@/data/protocols/db'
 import { DbAuthentication } from '@/data/usecases/authentication'
 import { Authentication } from '@/domain/usecases'
@@ -7,6 +7,7 @@ import { mock, MockProxy } from 'jest-mock-extended'
 describe('DbAuthentication UseCase', () => {
   let sut: DbAuthentication
   let fakeHashCompare: MockProxy<HashComparer>
+  let fakeTokenGenerator: MockProxy<TokenGenerator>
   let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
   let fakeAuthentication: MockProxy<Authentication.Input>
   beforeAll(() => {
@@ -23,10 +24,16 @@ describe('DbAuthentication UseCase', () => {
     })
     fakeHashCompare = mock()
     fakeHashCompare.compare.mockResolvedValue(true)
+    fakeTokenGenerator = mock()
+    fakeTokenGenerator.generate.mockResolvedValue({ token: 'any_token' })
   })
 
   beforeEach(() => {
-    sut = new DbAuthentication(fakeLoadAccount, fakeHashCompare)
+    sut = new DbAuthentication(
+      fakeLoadAccount,
+      fakeHashCompare,
+      fakeTokenGenerator
+    )
   })
 
   it('Should call LoadAccountByEmailRepository with correct email', async () => {
@@ -73,5 +80,13 @@ describe('DbAuthentication UseCase', () => {
     const accessToken = await sut.auth(fakeAuthentication)
 
     expect(accessToken.token).toBeUndefined()
+  })
+
+  it('Should call TokenGenerator with correct id', async () => {
+    const generateSpy = jest.spyOn(fakeTokenGenerator, 'generate')
+
+    await sut.auth(fakeAuthentication)
+
+    expect(generateSpy).toHaveBeenLastCalledWith({ id: 'any_id' })
   })
 })
