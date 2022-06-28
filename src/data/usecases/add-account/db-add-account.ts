@@ -1,4 +1,5 @@
-import { AddAccountRepository, Encrypter } from '@/data/protocols'
+import { AddAccountRepository } from '@/data/protocols/db'
+import { Encrypter } from '@/data/protocols/criptograpfy'
 import { AccountModel } from '@/domain/models'
 import { AddAccount, AddAccountModel } from '@/domain/usecases'
 

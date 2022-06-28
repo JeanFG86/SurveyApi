@@ -1,4 +1,4 @@
-import { LoadAccountByEmailRepository } from '@/data/protocols'
+import { LoadAccountByEmailRepository } from '@/data/protocols/db'
 import { DbAuthentication } from '@/data/usecases/authentication'
 import { mock, MockProxy } from 'jest-mock-extended'
 
