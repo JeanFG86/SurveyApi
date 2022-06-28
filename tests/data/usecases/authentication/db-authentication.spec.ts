@@ -38,4 +38,14 @@ describe('DbAuthentication UseCase', () => {
 
     await expect(promise).rejects.toThrow()
   })
+
+  it('Should return undefined if LoadAccountByEmailRepository returns undefined', async () => {
+    fakeLoadAccount.load.mockResolvedValueOnce(null)
+    const accessToken = await sut.auth({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+
+    expect(accessToken.token).toBeUndefined()
+  })
 })
