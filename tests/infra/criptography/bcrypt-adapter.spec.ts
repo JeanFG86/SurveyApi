@@ -16,13 +16,13 @@ describe('Bcrypt Adapter', () => {
     sut = new BcryptAdapter(salt)
   })
 
-  it('Should call bcrypt with correct values', async () => {
+  it('Should call hash with correct values', async () => {
     await sut.hash('any_value')
 
     expect(fakeBcrypt.hash).toHaveBeenCalledWith('any_value', salt)
   })
 
-  it('Should return a hash on success', async () => {
+  it('Should return a valid hash on hash success', async () => {
     fakeBcrypt.hash.mockImplementationOnce(() => 'hash')
 
     const hash = await sut.hash('any_value')
@@ -36,5 +36,14 @@ describe('Bcrypt Adapter', () => {
     const promise = sut.hash('any_value')
 
     await expect(promise).rejects.toThrow(new Error('bcrypt_error'))
+  })
+
+  it('Should call compare with correct values', async () => {
+    await sut.compare({
+      value: 'any_value',
+      hash: 'any_hash'
+    })
+
+    expect(fakeBcrypt.compare).toHaveBeenCalledWith('any_value', 'any_hash')
   })
 })
