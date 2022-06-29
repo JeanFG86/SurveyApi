@@ -115,4 +115,12 @@ describe('DbAuthentication UseCase', () => {
 
     expect(updateSpy).toHaveBeenLastCalledWith({ id: 'any_id', token: 'any_token' })
   })
+
+  it('Should throw if UpdateAccessTokenRepository thorws', async () => {
+    fakeUpdateAccessTokenRepo.update.mockRejectedValueOnce(new Error())
+
+    const promise = sut.auth(fakeAuthentication)
+
+    await expect(promise).rejects.toThrow()
+  })
 })
