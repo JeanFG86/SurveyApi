@@ -46,4 +46,25 @@ describe('Bcrypt Adapter', () => {
 
     expect(fakeBcrypt.compare).toHaveBeenCalledWith('any_value', 'any_hash')
   })
+
+  it('Should return true when compare succeds', async () => {
+    fakeBcrypt.compare.mockImplementationOnce(() => true)
+    const isValid = await sut.compare({
+      value: 'any_value',
+      hash: 'any_hash'
+    })
+
+    expect(isValid).toBe(true)
+  })
+
+  it('Should return false when compare fails', async () => {
+    fakeBcrypt.compare.mockImplementationOnce(() => false)
+
+    const isValid = await sut.compare({
+      value: 'any_value',
+      hash: 'any_hash'
+    })
+
+    expect(isValid).toBe(false)
+  })
 })
