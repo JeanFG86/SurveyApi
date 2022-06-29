@@ -1,4 +1,4 @@
-import { HashComparer, TokenGenerator } from '@/data/protocols/criptograpfy'
+import { HashComparer, Encrypter } from '@/data/protocols/criptograpfy'
 import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '@/data/protocols/db'
 import { DbAuthentication } from '@/data/usecases/authentication'
 import { Authentication } from '@/domain/usecases'
@@ -7,7 +7,7 @@ import { mock, MockProxy } from 'jest-mock-extended'
 describe('DbAuthentication UseCase', () => {
   let sut: DbAuthentication
   let fakeHashCompare: MockProxy<HashComparer>
-  let fakeTokenGenerator: MockProxy<TokenGenerator>
+  let fakeEncrypter: MockProxy<Encrypter>
   let fakeUpdateAccessTokenRepo: MockProxy<UpdateAccessTokenRepository>
   let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
   let fakeAuthentication: MockProxy<Authentication.Input>
@@ -25,8 +25,8 @@ describe('DbAuthentication UseCase', () => {
     })
     fakeHashCompare = mock()
     fakeHashCompare.compare.mockResolvedValue(true)
-    fakeTokenGenerator = mock()
-    fakeTokenGenerator.generate.mockResolvedValue({ token: 'any_token' })
+    fakeEncrypter = mock()
+    fakeEncrypter.encrypt.mockResolvedValue({ token: 'any_token' })
     fakeUpdateAccessTokenRepo = mock()
     fakeUpdateAccessTokenRepo.update.mockResolvedValue()
   })
@@ -35,7 +35,7 @@ describe('DbAuthentication UseCase', () => {
     sut = new DbAuthentication(
       fakeLoadAccount,
       fakeHashCompare,
-      fakeTokenGenerator,
+      fakeEncrypter,
       fakeUpdateAccessTokenRepo
     )
   })
@@ -86,16 +86,16 @@ describe('DbAuthentication UseCase', () => {
     expect(accessToken.token).toBeUndefined()
   })
 
-  it('Should call TokenGenerator with correct id', async () => {
-    const generateSpy = jest.spyOn(fakeTokenGenerator, 'generate')
+  it('Should call Encrypter with correct id', async () => {
+    const generateSpy = jest.spyOn(fakeEncrypter, 'encrypt')
 
     await sut.auth(fakeAuthentication)
 
-    expect(generateSpy).toHaveBeenLastCalledWith({ id: 'any_id' })
+    expect(generateSpy).toHaveBeenLastCalledWith({ value: 'any_id' })
   })
 
-  it('Should throw if TokenGenerator thorws', async () => {
-    fakeTokenGenerator.generate.mockRejectedValueOnce(new Error())
+  it('Should throw if Encrypter thorws', async () => {
+    fakeEncrypter.encrypt.mockRejectedValueOnce(new Error())
 
     const promise = sut.auth(fakeAuthentication)
 

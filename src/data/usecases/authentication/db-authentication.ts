@@ -1,4 +1,4 @@
-import { HashComparer, TokenGenerator } from '@/data/protocols/criptograpfy'
+import { HashComparer, Encrypter } from '@/data/protocols/criptograpfy'
 import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '@/data/protocols/db'
 import { Authentication } from '@/domain/usecases'
 
@@ -6,7 +6,7 @@ export class DbAuthentication implements Authentication {
   constructor (
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashComparer: HashComparer,
-    private readonly tokenGenerator: TokenGenerator,
+    private readonly encrypter: Encrypter,
     private readonly updateAccessTokenRepository: UpdateAccessTokenRepository) { }
 
   async auth (input: Authentication.Input): Promise<Authentication.OutPut> {
@@ -17,7 +17,7 @@ export class DbAuthentication implements Authentication {
         hash: account.password
       })
       if (isValid) {
-        const token = await this.tokenGenerator.generate({ id: account.id })
+        const token = await this.encrypter.encrypt({ value: account.id })
         await this.updateAccessTokenRepository.update({ id: account.id, token: token.token })
         return token
       }
