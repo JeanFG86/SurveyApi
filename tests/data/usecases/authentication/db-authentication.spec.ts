@@ -1,5 +1,5 @@
 import { HashComparer, TokenGenerator } from '@/data/protocols/criptograpfy'
-import { LoadAccountByEmailRepository } from '@/data/protocols/db'
+import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '@/data/protocols/db'
 import { DbAuthentication } from '@/data/usecases/authentication'
 import { Authentication } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
@@ -8,6 +8,7 @@ describe('DbAuthentication UseCase', () => {
   let sut: DbAuthentication
   let fakeHashCompare: MockProxy<HashComparer>
   let fakeTokenGenerator: MockProxy<TokenGenerator>
+  let fakeUpdateAccessTokenRepo: MockProxy<UpdateAccessTokenRepository>
   let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
   let fakeAuthentication: MockProxy<Authentication.Input>
   beforeAll(() => {
@@ -26,13 +27,16 @@ describe('DbAuthentication UseCase', () => {
     fakeHashCompare.compare.mockResolvedValue(true)
     fakeTokenGenerator = mock()
     fakeTokenGenerator.generate.mockResolvedValue({ token: 'any_token' })
+    fakeUpdateAccessTokenRepo = mock()
+    fakeUpdateAccessTokenRepo.update.mockResolvedValue()
   })
 
   beforeEach(() => {
     sut = new DbAuthentication(
       fakeLoadAccount,
       fakeHashCompare,
-      fakeTokenGenerator
+      fakeTokenGenerator,
+      fakeUpdateAccessTokenRepo
     )
   })
 
@@ -102,5 +106,13 @@ describe('DbAuthentication UseCase', () => {
     const accessToken = await sut.auth(fakeAuthentication)
 
     expect(accessToken).toEqual({ token: 'any_token' })
+  })
+
+  it('Should call UpdateAccessTokenRepository with correct values', async () => {
+    const updateSpy = jest.spyOn(fakeUpdateAccessTokenRepo, 'update')
+
+    await sut.auth(fakeAuthentication)
+
+    expect(updateSpy).toHaveBeenLastCalledWith({ id: 'any_id', token: 'any_token' })
   })
 })
