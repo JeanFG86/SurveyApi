@@ -30,12 +30,12 @@ describe('Bcrypt Adapter', () => {
     expect(hash).toBe('hash')
   })
 
-  it('Should throw if bcrypt throws', async () => {
-    fakeBcrypt.hash.mockImplementationOnce(() => { throw new Error('bcrypt_error') })
+  it('Should throw if hash throws', async () => {
+    fakeBcrypt.hash.mockImplementationOnce(() => { throw new Error('hash_error') })
 
     const promise = sut.hash('any_value')
 
-    await expect(promise).rejects.toThrow(new Error('bcrypt_error'))
+    await expect(promise).rejects.toThrow(new Error('hash_error'))
   })
 
   it('Should call compare with correct values', async () => {
@@ -66,5 +66,16 @@ describe('Bcrypt Adapter', () => {
     })
 
     expect(isValid).toBe(false)
+  })
+
+  it('Should throw if compare throws', async () => {
+    fakeBcrypt.compare.mockImplementationOnce(() => { throw new Error('compare_error') })
+
+    const promise = sut.compare({
+      value: 'any_value',
+      hash: 'any_hash'
+    })
+
+    await expect(promise).rejects.toThrow(new Error('compare_error'))
   })
 })
