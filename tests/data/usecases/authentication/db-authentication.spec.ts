@@ -17,7 +17,7 @@ describe('DbAuthentication UseCase', () => {
       password: 'any_password'
     }
     fakeLoadAccount = mock()
-    fakeLoadAccount.load.mockResolvedValue({
+    fakeLoadAccount.loadByEmail.mockResolvedValue({
       id: 'any_id',
       name: 'any_name',
       email: 'any_email@mail.com',
@@ -43,11 +43,11 @@ describe('DbAuthentication UseCase', () => {
   it('Should call LoadAccountByEmailRepository with correct email', async () => {
     await sut.auth(fakeAuthentication)
 
-    expect(fakeLoadAccount.load).toHaveBeenCalledWith('any_email@mail.com')
+    expect(fakeLoadAccount.loadByEmail).toHaveBeenCalledWith('any_email@mail.com')
   })
 
   it('Should throw if LoadAccountByEmailRepository thorws', async () => {
-    fakeLoadAccount.load.mockRejectedValueOnce(new Error())
+    fakeLoadAccount.loadByEmail.mockRejectedValueOnce(new Error())
 
     const promise = sut.auth(fakeAuthentication)
 
@@ -55,7 +55,7 @@ describe('DbAuthentication UseCase', () => {
   })
 
   it('Should return undefined if LoadAccountByEmailRepository returns undefined', async () => {
-    fakeLoadAccount.load.mockResolvedValueOnce(null)
+    fakeLoadAccount.loadByEmail.mockResolvedValueOnce(null)
 
     const accessToken = await sut.auth(fakeAuthentication)
 
