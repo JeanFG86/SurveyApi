@@ -3,7 +3,7 @@ import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository'
 import { Collection } from 'mongodb'
 
 describe('Account Mongo Repository', () => {
-  let accontCollection: Collection
+  let accountCollection: Collection
   let sut: AccountMongoRepository
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL!)
@@ -15,8 +15,8 @@ describe('Account Mongo Repository', () => {
 
   beforeEach(async () => {
     sut = new AccountMongoRepository()
-    accontCollection = MongoHelper.getCollection('accounts')
-    await accontCollection.deleteMany({})
+    accountCollection = MongoHelper.getCollection('accounts')
+    await accountCollection.deleteMany({})
   })
 
   it('Should return an account on add success', async () => {
@@ -34,13 +34,14 @@ describe('Account Mongo Repository', () => {
   })
 
   it('Should return an account on loadByEmail success', async () => {
-    await accontCollection.insertOne({
+    await accountCollection.insertOne({
       name: 'any_name',
       email: 'any_email@mail.com',
       password: 'any_password'
     })
 
     const account = await sut.loadByEmail('any_email@mail.com')
+
     expect(account).toBeTruthy()
     expect(account?.id).toBeTruthy()
     expect(account?.name).toBe('any_name')
@@ -50,6 +51,25 @@ describe('Account Mongo Repository', () => {
 
   it('Should return null if loadByEmail fails', async () => {
     const account = await sut.loadByEmail('any_email@mail.com')
+
     expect(account).toBeFalsy()
+  })
+
+  it('Should update the account accessToken on updateAccessToken success', async () => {
+    const res = await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+    const fakeAccount = await accountCollection.findOne(res.insertedId)
+
+    expect(fakeAccount?.accessToken).toBeFalsy()
+
+    await sut.updateAccessToken({ id: fakeAccount!._id.toHexString(), token: 'any_token' })
+
+    const account = await accountCollection.findOne({ _id: fakeAccount?._id })
+
+    expect(account).toBeTruthy()
+    expect(account?.accessToken).toBe('any_token')
   })
 })

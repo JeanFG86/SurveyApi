@@ -28,7 +28,7 @@ describe('DbAuthentication UseCase', () => {
     fakeEncrypter = mock()
     fakeEncrypter.encrypt.mockResolvedValue({ token: 'any_token' })
     fakeUpdateAccessTokenRepo = mock()
-    fakeUpdateAccessTokenRepo.updateAcessToken.mockResolvedValue()
+    fakeUpdateAccessTokenRepo.updateAccessToken.mockResolvedValue()
   })
 
   beforeEach(() => {
@@ -109,7 +109,7 @@ describe('DbAuthentication UseCase', () => {
   })
 
   it('Should call UpdateAccessTokenRepository with correct values', async () => {
-    const updateSpy = jest.spyOn(fakeUpdateAccessTokenRepo, 'updateAcessToken')
+    const updateSpy = jest.spyOn(fakeUpdateAccessTokenRepo, 'updateAccessToken')
 
     await sut.auth(fakeAuthentication)
 
@@ -117,7 +117,7 @@ describe('DbAuthentication UseCase', () => {
   })
 
   it('Should throw if UpdateAccessTokenRepository thorws', async () => {
-    fakeUpdateAccessTokenRepo.updateAcessToken.mockRejectedValueOnce(new Error())
+    fakeUpdateAccessTokenRepo.updateAccessToken.mockRejectedValueOnce(new Error())
 
     const promise = sut.auth(fakeAuthentication)
 
