@@ -5,5 +5,5 @@ export interface Encrypter{
 
 export namespace Encrypter{
   export type Input = { value: string }
-  export type OutPut = { token: string }
+  export type OutPut = { token: string | undefined }
 }
