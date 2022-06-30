@@ -17,7 +17,7 @@ describe('Account Mongo Repository', () => {
     await accontCollection.deleteMany({})
   })
 
-  it('Should return an account on success', async () => {
+  it('Should return an account on add success', async () => {
     const account = await sut.add({
       name: 'any_name',
       email: 'any_email@mail.com',
