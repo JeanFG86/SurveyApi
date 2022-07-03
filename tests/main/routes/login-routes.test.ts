@@ -34,13 +34,15 @@ describe('Login Routes', () => {
   })
 
   describe('POST /login', () => {
-    it('Should return 200 on signup', async () => {
+    it('Should return 200 on login', async () => {
       const password = await hash('123', 12)
+
       await accontCollection.insertOne({
         name: 'Jean',
         email: 'jean@gmail.com',
         password: password
       })
+
       await request(app)
         .post('/api/login')
         .send({
@@ -48,6 +50,16 @@ describe('Login Routes', () => {
           password: '123'
         })
         .expect(200)
+    })
+
+    it('Should return 401 on login', async () => {
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'jean@gmail.com',
+          password: '123'
+        })
+        .expect(401)
     })
   })
 })
