@@ -1,4 +1,4 @@
-import { EmailValidatorAdapter } from '@/utils'
+import { EmailValidatorAdapter } from '@/main/adapters/validators'
 import validator from 'validator'
 
 jest.mock('validator')
