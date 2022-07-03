@@ -1,4 +1,4 @@
-import { AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '@/data/protocols/db'
+import { AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '@/data/protocols/db/account'
 import { AccountModel } from '@/domain/models'
 import { AddAccountModel } from '@/domain/usecases'
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
@@ -38,30 +38,9 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
 
   async updateAccessToken (input: UpdateAccessTokenRepository.Input): Promise<void> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-
-    // const account2 = await accountCollection.findOne({ _id: input.id })
-
-    // console.log(account2)
-    // const fakeAccount = await accountCollection.findOne({ id: input.id })
-
-    // console.log(fakeAccount)
-
-    // console.log(input.id)
     await accountCollection.updateOne(
       { _id: new ObjectId(input.id) },
       { $set: { accessToken: input.token } }
     )
-
-    // console.log(c)
-    /*
-    const accountCollection = await MongoHelper.getCollection('accounts')
-    await accountCollection.updateOne({
-      id: input.id
-    }, {
-      $set: {
-        accessToken: input.token
-      }
-    })
-    */
   }
 }

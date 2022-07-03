@@ -1,4 +1,4 @@
-import { AddAccountRepository } from '@/data/protocols/db'
+import { AddAccountRepository } from '@/data/protocols/db/account'
 import { Hasher } from '@/data/protocols/criptograpfy'
 import { DbAddAccount } from '@/data/usecases/add-account'
 import { AccountModel } from '@/domain/models'

@@ -1,6 +1,6 @@
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { Collection } from 'mongodb'
-import { LogMongoRepository } from '@/infra/db/mongodb/log-repository'
+import { LogMongoRepository } from '@/infra/db/mongodb/log'
 
 describe('log Mongo Repository', () => {
   let sut: LogMongoRepository
