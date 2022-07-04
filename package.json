@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/main",
+    "dev": "node dist/main",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
@@ -59,5 +60,8 @@
     "mongodb": "^4.7.0",
     "rimraf": "^3.0.2",
     "validator": "^13.7.0"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
