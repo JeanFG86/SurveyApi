@@ -1,12 +1,13 @@
 import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
 import { badRequest, ok, serverError } from '@/presentation/helpers/http'
-import { AddAccount } from '@/domain/usecases'
+import { AddAccount, Authentication } from '@/domain/usecases'
 import { Validation } from '@/presentation/helpers/validators'
 
 export class SignUpController implements Controller {
   constructor (
     private readonly addAccount: AddAccount,
-    private readonly validation: Validation
+    private readonly validation: Validation,
+    private readonly authentication: Authentication
   ) { }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -16,12 +17,15 @@ export class SignUpController implements Controller {
         return badRequest(error)
       }
       const { name, email, password } = httpRequest.body
-      const account = await this.addAccount.add({
+      await this.addAccount.add({
         name,
         email,
         password
       })
-      return ok(account)
+      const { token } = await this.authentication.auth({
+        email, password
+      })
+      return ok({ token })
     } catch (error) {
       return serverError(new Error())
     }

@@ -1,5 +1,5 @@
 import { AccountModel } from '@/domain/models'
-import { AddAccount } from '@/domain/usecases'
+import { AddAccount, Authentication } from '@/domain/usecases'
 import { SignUpController } from '@/presentation/controllers/signup'
 import { MissingParamError, ServerError } from '@/presentation/errors'
 import { HttpRequest } from '@/presentation/protocols'
@@ -13,9 +13,12 @@ describe('SignUp Controller', () => {
   let addAccount: MockProxy<AddAccount>
   let fakeRequest: MockProxy<HttpRequest>
   let fakeAccount: MockProxy<AccountModel>
+  let fakeAuthentication: MockProxy<Authentication>
   beforeAll(() => {
     fakeValidation = mock()
     fakeValidation.validate.mockReturnValue(undefined)
+    fakeAuthentication = mock()
+    fakeAuthentication.auth.mockResolvedValue({ token: 'any_token' })
     addAccount = mock()
     fakeAccount = {
       id: 'any_id',
@@ -35,7 +38,7 @@ describe('SignUp Controller', () => {
   })
 
   beforeEach(() => {
-    sut = new SignUpController(addAccount, fakeValidation)
+    sut = new SignUpController(addAccount, fakeValidation, fakeAuthentication)
   })
 
   it('should return 500 if AddAccount thows', async () => {
@@ -69,7 +72,7 @@ describe('SignUp Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest)
 
-    expect(httpResponse).toEqual(ok(fakeAccount))
+    expect(httpResponse).toEqual(ok({ token: 'any_token' }))
   })
 
   it('should call Validation with correct values', async () => {
@@ -85,5 +88,21 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(fakeRequest)
 
     expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
+  })
+
+  it('Should call Authentication with correct values', async () => {
+    const authSpy = jest.spyOn(fakeAuthentication, 'auth')
+
+    await sut.handle(fakeRequest)
+
+    expect(authSpy).toHaveBeenCalledWith({ email: 'any_email@mail.com', password: 'any_password' })
+  })
+
+  it('Should return 500 if Authentications throws', async () => {
+    jest.spyOn(fakeAuthentication, 'auth').mockRejectedValueOnce(new Error())
+
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
