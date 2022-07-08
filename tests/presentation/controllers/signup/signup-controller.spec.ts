@@ -1,10 +1,10 @@
 import { AccountModel } from '@/domain/models'
 import { AddAccount, Authentication } from '@/domain/usecases'
 import { SignUpController } from '@/presentation/controllers/signup'
-import { MissingParamError, ServerError } from '@/presentation/errors'
+import { EmailInUseError, MissingParamError, ServerError } from '@/presentation/errors'
 import { HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
-import { ok, serverError, badRequest } from '@/presentation/helpers/http'
+import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http'
 import { Validation } from '@/presentation/helpers/validators'
 
 describe('SignUp Controller', () => {
@@ -104,5 +104,22 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(fakeRequest)
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  it('should return 403 if AddAccount returns undefined', async () => {
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password'
+      }
+    }
+
+    addAccount.add.mockResolvedValueOnce(undefined)
+
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
   })
 })
