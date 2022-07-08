@@ -1,2 +1,2 @@
 export * from './login-validation-factory'
-export * from './login-fatory'
+export * from './login-controller-fatory'
