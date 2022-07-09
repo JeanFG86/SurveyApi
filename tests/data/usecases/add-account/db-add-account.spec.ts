@@ -11,20 +11,10 @@ describe('DbAddAccount Usecase', () => {
   let fakeAccount: MockProxy<AccountModel>
   let fakeAccountRepository: MockProxy<AddAccountRepository>
   let fakeAccountData: MockProxy<AddAccountModel>
-  // let fakeAuthentication: MockProxy<Authentication.Input>
   let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
   beforeAll(() => {
-    // fakeAuthentication = {
-    //  email: 'any_email@mail.com',
-    //  password: 'any_password'
-    // }
     fakeLoadAccount = mock()
-    fakeLoadAccount.loadByEmail.mockResolvedValue({
-      id: 'any_id',
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'hashed_password'
-    })
+    fakeLoadAccount.loadByEmail.mockResolvedValue(null)
     encrypt = mock()
     encrypt.hash.mockResolvedValue('hashed_password')
     fakeAccount = {
@@ -92,5 +82,13 @@ describe('DbAddAccount Usecase', () => {
     await sut.add(fakeAccountData)
 
     expect(fakeLoadAccount.loadByEmail).toHaveBeenCalledWith('valid_email@mail.com')
+  })
+
+  it('Should return undefined if LoadAccountByEmailRepository not returns undefined', async () => {
+    fakeLoadAccount.loadByEmail.mockResolvedValueOnce(fakeAccount)
+
+    const account = await sut.add(fakeAccountData)
+
+    expect(account).toBeUndefined()
   })
 })
