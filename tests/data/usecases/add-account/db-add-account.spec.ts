@@ -1,4 +1,4 @@
-import { AddAccountRepository } from '@/data/protocols/db/account'
+import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/protocols/db/account'
 import { Hasher } from '@/data/protocols/criptograpfy'
 import { DbAddAccount } from '@/data/usecases/add-account'
 import { AccountModel } from '@/domain/models'
@@ -11,27 +11,39 @@ describe('DbAddAccount Usecase', () => {
   let fakeAccount: MockProxy<AccountModel>
   let fakeAccountRepository: MockProxy<AddAccountRepository>
   let fakeAccountData: MockProxy<AddAccountModel>
-
+  // let fakeAuthentication: MockProxy<Authentication.Input>
+  let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
   beforeAll(() => {
+    // fakeAuthentication = {
+    //  email: 'any_email@mail.com',
+    //  password: 'any_password'
+    // }
+    fakeLoadAccount = mock()
+    fakeLoadAccount.loadByEmail.mockResolvedValue({
+      id: 'any_id',
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'hashed_password'
+    })
     encrypt = mock()
     encrypt.hash.mockResolvedValue('hashed_password')
     fakeAccount = {
       id: 'valid_id',
       name: 'valid_name',
-      email: 'valid_email',
+      email: 'valid_email@mail.com',
       password: 'hashed_password'
     }
     fakeAccountRepository = mock()
     fakeAccountRepository.add.mockResolvedValue(fakeAccount)
     fakeAccountData = {
       name: 'valid_name',
-      email: 'valid_email',
+      email: 'valid_email@mail.com',
       password: 'valid_password'
     }
   })
 
   beforeEach(() => {
-    sut = new DbAddAccount(encrypt, fakeAccountRepository)
+    sut = new DbAddAccount(encrypt, fakeAccountRepository, fakeLoadAccount)
   })
 
   it('Should call Hasher with correct password', async () => {
@@ -57,7 +69,7 @@ describe('DbAddAccount Usecase', () => {
 
     expect(addSpy).toHaveBeenCalledWith({
       name: 'valid_name',
-      email: 'valid_email',
+      email: 'valid_email@mail.com',
       password: 'hashed_password'
     })
   })
@@ -74,5 +86,11 @@ describe('DbAddAccount Usecase', () => {
     const account = await sut.add(fakeAccountData)
 
     expect(account).toEqual(fakeAccount)
+  })
+
+  it('Should call LoadAccountByEmailRepository with correct email', async () => {
+    await sut.add(fakeAccountData)
+
+    expect(fakeLoadAccount.loadByEmail).toHaveBeenCalledWith('valid_email@mail.com')
   })
 })
