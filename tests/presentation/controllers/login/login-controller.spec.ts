@@ -2,8 +2,7 @@ import { Authentication } from '@/domain/usecases'
 import { LoginController } from '@/presentation/controllers/login'
 import { MissingParamError } from '@/presentation/errors'
 import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers/http'
-import { Validation } from '@/presentation/helpers/validators'
-import { HttpRequest } from '@/presentation/protocols'
+import { Validation, HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('Login Controller', () => {

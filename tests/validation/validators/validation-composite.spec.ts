@@ -1,5 +1,6 @@
 import { MissingParamError } from '@/presentation/errors'
-import { Validation, ValidationComposite } from '@/presentation/helpers/validators'
+import { ValidationComposite } from '@/validation/validators'
+import { Validation } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('Validation Composite', () => {

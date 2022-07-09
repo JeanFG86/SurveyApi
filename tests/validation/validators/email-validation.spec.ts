@@ -1,6 +1,6 @@
-import { EmailValidator } from '@/presentation/protocols'
+import { EmailValidator } from '@/validation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
-import { EmailValidation } from '@/presentation/helpers/validators'
+import { EmailValidation } from '@/validation/validators'
 import { InvalidParamError } from '@/presentation/errors'
 
 describe('Email Validation', () => {

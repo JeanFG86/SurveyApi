@@ -1,5 +1,5 @@
 import { InvalidParamError } from '@/presentation/errors'
-import { CompareFieldsValidation } from '@/presentation/helpers/validators'
+import { CompareFieldsValidation } from '@/validation/validators'
 
 describe('CompareFieldsValidation', () => {
   let sut: CompareFieldsValidation

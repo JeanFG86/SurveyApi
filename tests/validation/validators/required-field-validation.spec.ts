@@ -1,5 +1,5 @@
 import { MissingParamError } from '@/presentation/errors'
-import { RequiredFieldValidation } from '@/presentation/helpers/validators'
+import { RequiredFieldValidation } from '@/validation/validators'
 
 describe('RequiredField Validation', () => {
   let sut: RequiredFieldValidation

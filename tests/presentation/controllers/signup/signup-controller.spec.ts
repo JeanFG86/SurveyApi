@@ -2,10 +2,9 @@ import { AccountModel } from '@/domain/models'
 import { AddAccount, Authentication } from '@/domain/usecases'
 import { SignUpController } from '@/presentation/controllers/signup'
 import { EmailInUseError, MissingParamError, ServerError } from '@/presentation/errors'
-import { HttpRequest } from '@/presentation/protocols'
+import { HttpRequest, Validation } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http'
-import { Validation } from '@/presentation/helpers/validators'
 
 describe('SignUp Controller', () => {
   let sut: SignUpController
