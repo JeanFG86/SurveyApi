@@ -1,7 +1,7 @@
 import { HttpRequest, Validation } from '@/presentation/protocols'
 import { AddSurveyController } from '@/presentation/controllers/survey/add-survey'
 import { mock, MockProxy } from 'jest-mock-extended'
-import { badRequest } from '@/presentation/helpers/http'
+import { badRequest, serverError } from '@/presentation/helpers/http'
 import { AddSurvey } from '@/domain/usecases'
 
 describe('AddSurvey Controller', () => {
@@ -33,6 +33,7 @@ describe('AddSurvey Controller', () => {
     const validateSpy = jest.spyOn(fakeValidation, 'validate')
 
     await sut.handle(fakeRequest)
+
     expect(validateSpy).toHaveBeenCalledWith(fakeRequest.body)
   })
 
@@ -48,6 +49,15 @@ describe('AddSurvey Controller', () => {
     const addSpy = jest.spyOn(fakeAddSurvey, 'add')
 
     await sut.handle(fakeRequest)
+
     expect(addSpy).toHaveBeenCalledWith(fakeRequest.body)
+  })
+
+  it('Should return 500 if AddSurvey throws', async () => {
+    fakeAddSurvey.add.mockRejectedValueOnce(new Error())
+
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
