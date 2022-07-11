@@ -2,14 +2,18 @@ import { HttpRequest, Validation } from '@/presentation/protocols'
 import { AddSurveyController } from '@/presentation/controllers/survey/add-survey'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { badRequest } from '@/presentation/helpers/http'
+import { AddSurvey } from '@/domain/usecases'
 
 describe('AddSurvey Controller', () => {
   let sut: AddSurveyController
   let fakeRequest: HttpRequest
   let fakeValidation: MockProxy<Validation>
+  let fakeAddSurvey: MockProxy<AddSurvey>
   beforeAll(() => {
     fakeValidation = mock()
     fakeValidation.validate.mockReturnValue(undefined)
+    fakeAddSurvey = mock()
+    // fakeAddSurvey.add.mockResolvedValue()
     fakeRequest = {
       body: {
         question: 'any_question',
@@ -22,7 +26,7 @@ describe('AddSurvey Controller', () => {
   })
 
   beforeEach(() => {
-    sut = new AddSurveyController(fakeValidation)
+    sut = new AddSurveyController(fakeValidation, fakeAddSurvey)
   })
 
   it('Should call validation with correct values', async () => {
@@ -38,5 +42,12 @@ describe('AddSurvey Controller', () => {
     const httpResponse = await sut.handle(fakeRequest)
 
     expect(httpResponse).toEqual(badRequest(new Error()))
+  })
+
+  it('Should call AddSurvey with correct values', async () => {
+    const addSpy = jest.spyOn(fakeAddSurvey, 'add')
+
+    await sut.handle(fakeRequest)
+    expect(addSpy).toHaveBeenCalledWith(fakeRequest.body)
   })
 })
