@@ -1,7 +1,7 @@
 import { HttpRequest, Validation } from '@/presentation/protocols'
 import { AddSurveyController } from '@/presentation/controllers/survey/add-survey'
 import { mock, MockProxy } from 'jest-mock-extended'
-import { badRequest, serverError } from '@/presentation/helpers/http'
+import { badRequest, noContent, serverError } from '@/presentation/helpers/http'
 import { AddSurvey } from '@/domain/usecases'
 
 describe('AddSurvey Controller', () => {
@@ -59,5 +59,11 @@ describe('AddSurvey Controller', () => {
     const httpResponse = await sut.handle(fakeRequest)
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  it('Should return 204 if AddSurvey success', async () => {
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(noContent())
   })
 })
