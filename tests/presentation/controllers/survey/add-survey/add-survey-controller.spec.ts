@@ -1,6 +1,7 @@
 import { HttpRequest, Validation } from '@/presentation/protocols'
 import { AddSurveyController } from '@/presentation/controllers/survey/add-survey'
 import { mock, MockProxy } from 'jest-mock-extended'
+import { badRequest } from '@/presentation/helpers/http'
 
 describe('AddSurvey Controller', () => {
   let sut: AddSurveyController
@@ -29,5 +30,13 @@ describe('AddSurvey Controller', () => {
 
     await sut.handle(fakeRequest)
     expect(validateSpy).toHaveBeenCalledWith(fakeRequest.body)
+  })
+
+  it('should return 400 if validation fails', async () => {
+    fakeValidation.validate.mockReturnValueOnce(new Error())
+
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(badRequest(new Error()))
   })
 })
