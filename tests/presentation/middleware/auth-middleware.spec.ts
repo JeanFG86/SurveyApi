@@ -44,4 +44,11 @@ describe('Auth Middleware', () => {
 
     expect(loadSpy).toHaveBeenCalledWith({ accessToken: 'any_token' })
   })
+
+  it('Should return 403 if LoadAccountByToken returns undefined', async () => {
+    fakeLoadAccountByToken.load.mockResolvedValueOnce(undefined)
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
+  })
 })
