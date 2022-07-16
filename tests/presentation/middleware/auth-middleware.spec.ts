@@ -4,11 +4,13 @@ import { AuthMiddleware } from '@/presentation/middlewares'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { LoadAccountByToken } from '@/domain/usecases'
 import { AccountModel } from '@/domain/models'
+import { HttpRequest } from '../protocols'
 
 describe('Auth Middleware', () => {
   let sut: AuthMiddleware
   let fakeLoadAccountByToken: MockProxy<LoadAccountByToken>
   let fakeAccount: AccountModel
+  let fakeRequest: HttpRequest
   beforeAll(() => {
     fakeLoadAccountByToken = mock()
     fakeAccount = {
@@ -18,6 +20,12 @@ describe('Auth Middleware', () => {
       password: 'hashed_password'
     }
     fakeLoadAccountByToken.load.mockResolvedValue(fakeAccount)
+
+    fakeRequest = {
+      headers: {
+        'x-access-token': 'any_token'
+      }
+    }
   })
 
   beforeEach(() => {
@@ -32,11 +40,7 @@ describe('Auth Middleware', () => {
 
   it('Should call LoadAccountByToken with correct accessToken', async () => {
     const loadSpy = jest.spyOn(fakeLoadAccountByToken, 'load')
-    await sut.handle({
-      headers: {
-        'x-access-token': 'any_token'
-      }
-    })
+    await sut.handle(fakeRequest)
 
     expect(loadSpy).toHaveBeenCalledWith({ accessToken: 'any_token' })
   })
