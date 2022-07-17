@@ -17,8 +17,16 @@ describe('DbLoadAccountByToken Usecase', () => {
   it('Should call Decrypter with correct values', async () => {
     const decryptSpy = jest.spyOn(fakeDecrypter, 'decrypt')
 
-    await sut.load({ accessToken: 'any_token' })
+    await sut.load({ accessToken: 'any_token', role: 'any_role' })
 
     expect(decryptSpy).toHaveBeenCalledWith('any_token')
+  })
+
+  it('Should return undefined if Decrypter returns undefined', async () => {
+    fakeDecrypter.decrypt.mockResolvedValueOnce(undefined)
+
+    const account = await sut.load({ accessToken: 'any_token', role: 'any_role' })
+
+    expect(account).toBeUndefined()
   })
 })
