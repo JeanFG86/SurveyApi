@@ -11,6 +11,7 @@ describe('Auth Middleware', () => {
   let fakeLoadAccountByToken: MockProxy<LoadAccountByToken>
   let fakeAccount: AccountModel
   let fakeRequest: HttpRequest
+  let role: string
   beforeAll(() => {
     fakeLoadAccountByToken = mock()
     fakeAccount = {
@@ -26,10 +27,11 @@ describe('Auth Middleware', () => {
         'x-access-token': 'any_token'
       }
     }
+    role = 'any_role'
   })
 
   beforeEach(() => {
-    sut = new AuthMiddleware(fakeLoadAccountByToken)
+    sut = new AuthMiddleware(fakeLoadAccountByToken, role)
   })
 
   it('Should return 403 if no x-access-token exists in headers', async () => {
@@ -42,7 +44,7 @@ describe('Auth Middleware', () => {
     const loadSpy = jest.spyOn(fakeLoadAccountByToken, 'load')
     await sut.handle(fakeRequest)
 
-    expect(loadSpy).toHaveBeenCalledWith({ accessToken: 'any_token' })
+    expect(loadSpy).toHaveBeenCalledWith({ accessToken: 'any_token', role: role })
   })
 
   it('Should return 403 if LoadAccountByToken returns undefined', async () => {
