@@ -1,4 +1,4 @@
-import { forbidden, ok } from '@/presentation/helpers/http'
+import { forbidden, ok, serverError } from '@/presentation/helpers/http'
 import { AccessDeniedError } from '@/presentation/errors'
 import { AuthMiddleware } from '@/presentation/middlewares'
 import { mock, MockProxy } from 'jest-mock-extended'
@@ -56,5 +56,12 @@ describe('Auth Middleware', () => {
     const httpResponse = await sut.handle(fakeRequest)
 
     expect(httpResponse).toEqual(ok({ accountId: 'valid_id' }))
+  })
+
+  it('Should return 500 if LoadAccountByToken throws ', async () => {
+    fakeLoadAccountByToken.load.mockRejectedValueOnce(new Error())
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
