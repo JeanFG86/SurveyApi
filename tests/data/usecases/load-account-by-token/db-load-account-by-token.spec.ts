@@ -57,4 +57,10 @@ describe('DbLoadAccountByToken Usecase', () => {
 
     expect(account).toBeUndefined()
   })
+
+  it('Should return an account on success', async () => {
+    const account = await sut.load({ accessToken: 'any_token', role: 'any_role' })
+
+    expect(account).toEqual(fakeAccount)
+  })
 })
