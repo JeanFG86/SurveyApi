@@ -49,4 +49,12 @@ describe('DbLoadAccountByToken Usecase', () => {
 
     expect(loadByTokenSpy).toHaveBeenCalledWith({ accessToken: 'any_token', role: 'any_role' })
   })
+
+  it('Should return undefined if LoadAccountByTokenRepository returns null', async () => {
+    fakeLoadAccountRepository.loadByToken.mockResolvedValueOnce(null)
+
+    const account = await sut.load({ accessToken: 'any_token', role: 'any_role' })
+
+    expect(account).toBeUndefined()
+  })
 })
