@@ -48,5 +48,13 @@ describe('JWT Adapter', () => {
 
       expect(verifySpy).toHaveBeenCalledWith('any_token', 'secret')
     })
+
+    it('Should return a value on verify success', async () => {
+      fakeJwt.verify.mockImplementationOnce(() => 'any_value')
+
+      const value = await sut.decrypt('any_token')
+
+      expect(value).toEqual('any_value')
+    })
   })
 })
