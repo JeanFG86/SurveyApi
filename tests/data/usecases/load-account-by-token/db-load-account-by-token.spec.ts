@@ -63,4 +63,12 @@ describe('DbLoadAccountByToken Usecase', () => {
 
     expect(account).toEqual(fakeAccount)
   })
+
+  it('Should throw LoadAccountByTokenRepository throws', async () => {
+    fakeLoadAccountRepository.loadByToken.mockRejectedValueOnce(new Error())
+
+    const promise = sut.load({ accessToken: 'any_token', role: 'any_role' })
+
+    await expect(promise).rejects.toThrow()
+  })
 })
