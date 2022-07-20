@@ -7,7 +7,16 @@ import { ObjectId } from 'mongodb'
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository, LoadAccountByTokenRepository {
   async loadByToken (input: LoadAccountByTokenRepository.Input): Promise<AccountModel | null> {
     const accountCollection = MongoHelper.getCollection('accounts')
-    const account = await accountCollection.findOne({ accessToken: input.accessToken, role: input.role })
+    const account = await accountCollection.findOne(
+      {
+        accessToken: input.accessToken,
+        $or: [{
+          role: input.role
+        }, {
+          role: 'admin'
+        }]
+
+      })
     if (account !== null) {
       const accountReturn = {
         id: account._id.toString(),
