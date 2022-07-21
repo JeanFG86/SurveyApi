@@ -3,6 +3,7 @@ import { AddSurveyController } from '@/presentation/controllers/survey/add-surve
 import { mock, MockProxy } from 'jest-mock-extended'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http'
 import { AddSurvey } from '@/domain/usecases'
+import MockDate from 'mockdate'
 
 describe('AddSurvey Controller', () => {
   let sut: AddSurveyController
@@ -10,23 +11,28 @@ describe('AddSurvey Controller', () => {
   let fakeValidation: MockProxy<Validation>
   let fakeAddSurvey: MockProxy<AddSurvey>
   beforeAll(() => {
+    MockDate.set(new Date())
     fakeValidation = mock()
     fakeValidation.validate.mockReturnValue(undefined)
     fakeAddSurvey = mock()
-    // fakeAddSurvey.add.mockResolvedValue()
     fakeRequest = {
       body: {
         question: 'any_question',
         answers: [{
           image: 'any_image',
           answer: 'any_answer'
-        }]
+        }],
+        date: new Date()
       }
     }
   })
 
   beforeEach(() => {
     sut = new AddSurveyController(fakeValidation, fakeAddSurvey)
+  })
+
+  afterAll(() => {
+    MockDate.reset()
   })
 
   it('Should call validation with correct values', async () => {

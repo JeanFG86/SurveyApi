@@ -54,6 +54,7 @@
     "jest": "^28.1.0",
     "jest-mock-extended": "^2.0.6",
     "lint-staged": "^12.5.0",
+    "mockdate": "^3.0.5",
     "supertest": "^6.2.3",
     "ts-jest": "^28.0.3",
     "ts-node-dev": "^2.0.0",
