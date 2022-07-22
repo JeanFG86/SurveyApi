@@ -1,6 +1,7 @@
 import { SurveyModel } from '@/domain/models'
 import { LoadSurveys } from '@/domain/usecases/load-surveys'
 import { LoadSurveysController } from '@/presentation/controllers/survey/load-surveys'
+import { ok } from '@/presentation/helpers/http'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 
@@ -46,5 +47,11 @@ describe('LoadSurveys Controller', () => {
     await sut.handle({})
 
     expect(loadSpy).toHaveBeenCalled()
+  })
+
+  it('Should returns 200 on success', async () => {
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toEqual(ok(fakeSurveys))
   })
 })
