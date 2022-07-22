@@ -1,7 +1,7 @@
 import { SurveyModel } from '@/domain/models'
 import { LoadSurveys } from '@/domain/usecases/load-surveys'
 import { LoadSurveysController } from '@/presentation/controllers/survey/load-surveys'
-import { ok } from '@/presentation/helpers/http'
+import { ok, serverError } from '@/presentation/helpers/http'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 
@@ -53,5 +53,13 @@ describe('LoadSurveys Controller', () => {
     const httpResponse = await sut.handle({})
 
     expect(httpResponse).toEqual(ok(fakeSurveys))
+  })
+
+  it('Should return 500 if LoadSurveys throws', async () => {
+    fakeLoadSurveys.load.mockRejectedValueOnce(new Error())
+
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
