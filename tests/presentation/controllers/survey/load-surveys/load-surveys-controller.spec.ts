@@ -1,7 +1,7 @@
 import { SurveyModel } from '@/domain/models'
 import { LoadSurveys } from '@/domain/usecases/load-surveys'
 import { LoadSurveysController } from '@/presentation/controllers/survey/load-surveys'
-import { ok, serverError } from '@/presentation/helpers/http'
+import { noContent, ok, serverError } from '@/presentation/helpers/http'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 
@@ -53,6 +53,14 @@ describe('LoadSurveys Controller', () => {
     const httpResponse = await sut.handle({})
 
     expect(httpResponse).toEqual(ok(fakeSurveys))
+  })
+
+  it('Should returns 204 if LoadSurveys returns empty', async () => {
+    fakeLoadSurveys.load.mockResolvedValueOnce([])
+
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toEqual(noContent())
   })
 
   it('Should return 500 if LoadSurveys throws', async () => {
