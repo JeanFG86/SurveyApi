@@ -53,4 +53,12 @@ describe('DbLoadSurveys Usecase', () => {
 
     expect(surveys).toEqual(fakeSurveys)
   })
+
+  it('Should throw LoadSurveysRepository throws', async () => {
+    fakeLoadSurveysRepository.loadAll.mockRejectedValueOnce(new Error())
+
+    const promise = sut.load()
+
+    await expect(promise).rejects.toThrow()
+  })
 })
