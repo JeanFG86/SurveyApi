@@ -45,4 +45,12 @@ describe('DbLoadSurveyById', () => {
 
     expect(surveys).toEqual(fakeSurvey)
   })
+
+  it('Should throw LoadSurveyByIdRepository throws', async () => {
+    fakeLoadSurveyByIdRepository.loadById.mockRejectedValueOnce(new Error())
+
+    const promise = sut.loadById('any_id')
+
+    await expect(promise).rejects.toThrow()
+  })
 })
