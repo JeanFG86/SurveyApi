@@ -12,19 +12,15 @@ describe('DbSaveSurveyResult UseCase', () => {
   let fakeSaveSurveyResultRepository: MockProxy<SaveSurveyResultRepository>
   beforeAll(() => {
     MockDate.set(new Date())
-    fakeSurveyResult = {
-      id: 'any_id',
-      surveyId: 'any_survey_id',
-      accountId: 'any_account_id',
-      answer: 'any_answer',
-      date: new Date()
-    }
     fakeSaveSurveyResult = {
       surveyId: 'any_survey_id',
       accountId: 'any_account_id',
       answer: 'any_answer',
       date: new Date()
     }
+    fakeSurveyResult = Object.assign({}, fakeSaveSurveyResult, {
+      id: 'any_id'
+    })
     fakeSaveSurveyResultRepository = mock()
     fakeSaveSurveyResultRepository.save.mockResolvedValue(fakeSurveyResult)
   })
@@ -43,5 +39,13 @@ describe('DbSaveSurveyResult UseCase', () => {
     await sut.save(fakeSaveSurveyResult)
 
     expect(saveSpy).toHaveBeenCalledWith(fakeSaveSurveyResult)
+  })
+
+  it('Should throw if SaveSurveyResultRepository throws', async () => {
+    fakeSaveSurveyResultRepository.save.mockRejectedValueOnce(new Error())
+
+    const promise = sut.save(fakeSaveSurveyResult)
+
+    await expect(promise).rejects.toThrow()
   })
 })
