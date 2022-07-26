@@ -1,0 +1,42 @@
+import { mock, MockProxy } from 'jest-mock-extended'
+import MockDate from 'mockdate'
+import { SurveyModel } from '@/domain/models'
+import { LoadSurveyByIdRepository } from '@/data/protocols/db/survey'
+import { DbLoadSurveyById } from '@/data/usecases/load-survey-by-id'
+
+describe('DbLoadSurveyById', () => {
+  let sut: DbLoadSurveyById
+  let fakeSurvey: SurveyModel
+  let fakeLoadSurveyByIdRepository: MockProxy<LoadSurveyByIdRepository>
+
+  beforeAll(() => {
+    MockDate.set(new Date())
+    fakeSurvey = {
+      id: 'any_id',
+      question: 'any_question',
+      answers: [{
+        image: 'any_image',
+        answer: 'any_answer'
+      }],
+      date: new Date()
+    }
+    fakeLoadSurveyByIdRepository = mock()
+    fakeLoadSurveyByIdRepository.loadById.mockResolvedValue(fakeSurvey)
+  })
+
+  beforeEach(() => {
+    sut = new DbLoadSurveyById(fakeLoadSurveyByIdRepository)
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
+  it('Should call LoadSurveyByIdRepository with correct id', async () => {
+    const loadByIdSpy = jest.spyOn(fakeLoadSurveyByIdRepository, 'loadById')
+
+    await sut.loadById('any_id')
+
+    expect(loadByIdSpy).toHaveBeenCalledWith('any_id')
+  })
+})
