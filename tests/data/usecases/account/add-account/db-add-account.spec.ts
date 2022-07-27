@@ -1,6 +1,6 @@
 import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/protocols/db/account'
 import { Hasher } from '@/data/protocols/criptograpfy'
-import { DbAddAccount } from '@/data/usecases/add-account'
+import { DbAddAccount } from '@/data/usecases/account/add-account'
 import { AccountModel } from '@/domain/models'
 import { AddAccountModel } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'

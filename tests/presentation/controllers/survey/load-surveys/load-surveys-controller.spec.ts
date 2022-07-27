@@ -1,5 +1,5 @@
 import { SurveyModel } from '@/domain/models'
-import { LoadSurveys } from '@/domain/usecases/load-surveys'
+import { LoadSurveys } from '@/domain/usecases/survey/load-surveys'
 import { LoadSurveysController } from '@/presentation/controllers/survey/load-surveys'
 import { noContent, ok, serverError } from '@/presentation/helpers/http'
 import { mock, MockProxy } from 'jest-mock-extended'

@@ -2,7 +2,7 @@ import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 import { SurveyModel } from '@/domain/models'
 import { LoadSurveyByIdRepository } from '@/data/protocols/db/survey'
-import { DbLoadSurveyById } from '@/data/usecases/load-survey-by-id'
+import { DbLoadSurveyById } from '@/data/usecases/survey/load-survey-by-id'
 
 describe('DbLoadSurveyById', () => {
   let sut: DbLoadSurveyById

@@ -1,6 +1,6 @@
 import { HashComparer, Encrypter } from '@/data/protocols/criptograpfy'
 import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '@/data/protocols/db/account'
-import { DbAuthentication } from '@/data/usecases/authentication'
+import { DbAuthentication } from '@/data/usecases/account/authentication'
 import { Authentication } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
 

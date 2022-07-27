@@ -1,5 +1,5 @@
 import { AddSurveyRepository } from '@/data/protocols/db/survey'
-import { DbAddSurvey } from '@/data/usecases/add-survey'
+import { DbAddSurvey } from '@/data/usecases/survey/add-survey'
 import { AddSurveyModel } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'

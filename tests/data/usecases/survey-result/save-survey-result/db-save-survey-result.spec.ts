@@ -1,9 +1,9 @@
-import { SaveSurveyResultRepository } from '@/data/protocols/db/survey'
+import { SaveSurveyResultRepository } from '@/data/protocols/db/survey-result'
 import { SurveyResultModel } from '@/domain/models'
 import { SaveSurveyResultModel } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
-import { DbSaveSurveyResult } from '@/data/usecases/save-survey-result'
+import { DbSaveSurveyResult } from '@/data/usecases/survey-result/save-survey-result'
 
 describe('DbSaveSurveyResult UseCase', () => {
   let sut: DbSaveSurveyResult

@@ -1,7 +1,7 @@
 import { LoadSurveysRepository } from '@/data/protocols/db/survey'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
-import { DbLoadSurveys } from '@/data/usecases/load-surveys'
+import { DbLoadSurveys } from '@/data/usecases/survey/load-surveys'
 import { SurveyModel } from '@/domain/models'
 
 describe('DbLoadSurveys Usecase', () => {

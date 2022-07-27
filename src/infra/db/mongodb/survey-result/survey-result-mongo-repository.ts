@@ -1,4 +1,4 @@
-import { SaveSurveyResultRepository } from '@/data/protocols/db/survey'
+import { SaveSurveyResultRepository } from '@/data/protocols/db/survey-result'
 import { SurveyResultModel } from '@/domain/models'
 import { SaveSurveyResultModel } from '@/domain/usecases'
 import { ObjectId } from 'mongodb'

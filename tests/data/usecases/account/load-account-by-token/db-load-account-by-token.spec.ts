@@ -1,6 +1,6 @@
 import { Decrypter } from '@/data/protocols/criptograpfy'
 import { mock, MockProxy } from 'jest-mock-extended'
-import { DbLoadAccountByToken } from '@/data/usecases/load-account-by-token'
+import { DbLoadAccountByToken } from '@/data/usecases/account/load-account-by-token'
 import { AccountModel } from '@/domain/models'
 import { LoadAccountByTokenRepository } from '@/data/protocols/db/account'
 
