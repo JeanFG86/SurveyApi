@@ -15,6 +15,8 @@ describe('Survey Mongo Result Repository', () => {
       answers: [{
         image: 'any_image',
         answer: 'any_answer'
+      }, {
+        answer: 'any_answer2'
       }],
       date: new Date()
     })
@@ -88,6 +90,32 @@ describe('Survey Mongo Result Repository', () => {
       })
 
       expect(surveyResult).toBeTruthy()
+    })
+
+    it('Should update survey result if its not new', async () => {
+      const survey = await makeSurvey()
+      const account = await makeAccount()
+      await surveyResultCollection.insertOne({
+        date: new Date(),
+        surveyId: survey!.id,
+        accountId: account!.id,
+        answer: survey!.answers[0].answer
+      })
+      await sut.save({
+        date: new Date(),
+        surveyId: survey!.id,
+        accountId: account!.id,
+        answer: survey!.answers[1].answer
+      })
+
+      const surveyResult = await surveyResultCollection
+        .find({
+          surveyId: new ObjectId(survey!.id),
+          accountId: new ObjectId(account!.id)
+        })
+        .toArray()
+      expect(surveyResult).toBeTruthy()
+      expect(surveyResult.length).toBe(1)
     })
   })
 })
