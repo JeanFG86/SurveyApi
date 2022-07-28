@@ -72,7 +72,7 @@ describe('SaveSurveyResult Controller', () => {
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
   })
 
-  it('Should return 500 if LoadSurveys throws', async () => {
+  it('Should return 500 if LoadSurveyById throws', async () => {
     fakeLoadSurveyById.loadById.mockRejectedValueOnce(new Error())
 
     const httpResponse = await sut.handle(fakeRequest)
