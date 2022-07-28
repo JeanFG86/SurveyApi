@@ -22,6 +22,6 @@ export class DbAuthentication implements Authentication {
         return token
       }
     }
-    return await new Promise(resolve => resolve({ token: undefined }))
+    return await Promise.resolve({ token: undefined })
   }
 }

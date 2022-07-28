@@ -17,6 +17,6 @@ export class DbLoadAccountByToken implements LoadAccountByToken {
         return account
       }
     }
-    return await new Promise(resolve => resolve(undefined))
+    return await Promise.resolve(undefined)
   }
 }
