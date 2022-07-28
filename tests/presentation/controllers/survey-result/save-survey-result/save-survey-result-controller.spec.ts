@@ -2,7 +2,7 @@ import { SurveyModel, SurveyResultModel } from '@/domain/models'
 import { LoadSurveyById, SaveSurveyResult } from '@/domain/usecases'
 import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result'
 import { InvalidParamError } from '@/presentation/errors'
-import { forbidden, serverError } from '@/presentation/helpers/http'
+import { forbidden, ok, serverError } from '@/presentation/helpers/http'
 import { HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
@@ -112,5 +112,11 @@ describe('SaveSurveyResult Controller', () => {
     const httpResponse = await sut.handle(fakeRequest)
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  it('Should return 200 on success', async () => {
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(ok(fakeSurveyResultModel))
   })
 })
