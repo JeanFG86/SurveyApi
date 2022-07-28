@@ -2,7 +2,7 @@ import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/proto
 import { Hasher } from '@/data/protocols/criptograpfy'
 import { DbAddAccount } from '@/data/usecases/account/add-account'
 import { AccountModel } from '@/domain/models'
-import { AddAccountModel } from '@/domain/usecases'
+import { AddAccountParams } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('DbAddAccount Usecase', () => {
@@ -10,7 +10,7 @@ describe('DbAddAccount Usecase', () => {
   let encrypt: MockProxy<Hasher>
   let fakeAccount: MockProxy<AccountModel>
   let fakeAccountRepository: MockProxy<AddAccountRepository>
-  let fakeAccountData: MockProxy<AddAccountModel>
+  let fakeAccountData: MockProxy<AddAccountParams>
   let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
   beforeAll(() => {
     fakeLoadAccount = mock()
