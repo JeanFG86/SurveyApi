@@ -1,6 +1,8 @@
 import { SurveyModel } from '@/domain/models'
 import { LoadSurveyById } from '@/domain/usecases'
 import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result'
+import { InvalidParamError } from '@/presentation/errors'
+import { forbidden } from '@/presentation/helpers/http'
 import { HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
@@ -45,5 +47,13 @@ describe('SaveSurveyResult Controller', () => {
     await sut.handle(fakeRequest)
 
     expect(loadByIdSpy).toBeCalledWith('any_survey_id')
+  })
+
+  it('Should return 403 if LoadSurveyById returns null', async () => {
+    fakeLoadSurveyById.loadById.mockResolvedValueOnce(undefined)
+
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
   })
 })
