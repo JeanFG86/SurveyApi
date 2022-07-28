@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/main",
-    "dev": "tsnd --respawn --transpile-only src/main",
+    "dev": "tsnd --respawn --transpile-only --inspect=0.0.0.0:9229 src/main",
     "start-docker2": "tsnd --poll --respawn --transpile-only --inspect=0.0.0.0:8222 ./dist/main",
     "start-docker": "nodemon -L --watch ./dist --inspect=0.0.0.0:8222 --nolazy ./dist/main",
     "start-docker3": "nodemon --inspect=0.0.0.0:8222 --legacy-watch ./dist/main",
-    "debug": "node --inspect=0.0.0.8222 --nolazy dist/main",
+    "debug": "ts-node-dev --respawn --transpile-only -r dotenv/config --inspect=0.0.0.0:9229 src/main",
     "up": "npm run build && docker-compose up -d",
     "down": "docker-compose down",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
