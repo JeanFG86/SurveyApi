@@ -105,4 +105,12 @@ describe('SaveSurveyResult Controller', () => {
       date: new Date()
     })
   })
+
+  it('Should return 500 if SaveSurveyResult throws', async () => {
+    fakeSaveSurveyResult.save.mockRejectedValueOnce(new Error())
+
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
+  })
 })
