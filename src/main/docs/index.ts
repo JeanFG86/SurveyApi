@@ -1,6 +1,6 @@
-import { loginPath } from '../docs/paths/login-paths'
-import { accoutSchema } from './schemas/account-schema'
-import { loginParamsSchema } from './schemas/login-params-schema'
+import { loginPath } from '@/main/docs/paths'
+import { badRequest, notFound, serverError, unauthorizedError } from '@/main/docs/components'
+import { accoutSchema, errorSchema, loginParamsSchema } from '@/main/docs/schemas'
 
 export default {
   openapi: '3.0.0',
@@ -8,6 +8,10 @@ export default {
     title: 'Survey API',
     description: 'API para realizar enquetes!!',
     version: '1.0.0'
+  },
+  license: {
+    name: 'ISC',
+    url: 'https://opensource.org/licenses/ISC'
   },
   servers: [{
     url: '/api'
@@ -20,6 +24,13 @@ export default {
   },
   schemas: {
     account: accoutSchema,
-    loginParams: loginParamsSchema
+    loginParams: loginParamsSchema,
+    error: errorSchema
+  },
+  components: {
+    badRequest,
+    serverError,
+    unauthorizedError,
+    notFound
   }
 }
