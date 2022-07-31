@@ -3,7 +3,7 @@ export const surveyPath = {
     security: [{
       apiKeyAuth: []
     }],
-    tags: ['Equete'],
+    tags: ['Enquete'],
     summary: 'API para listar todas as enquetes',
     responses: {
       200: {
@@ -31,7 +31,7 @@ export const surveyPath = {
     security: [{
       apiKeyAuth: []
     }],
-    tags: ['Equete'],
+    tags: ['Enquete'],
     summary: 'API para criar uma enquete',
     requestBody: {
       content: {
