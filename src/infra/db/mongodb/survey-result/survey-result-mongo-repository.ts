@@ -18,7 +18,12 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
     }, {
       upsert: true
     })
-    if (res.value) {
+
+    const surveyResult = await this.loadBySurveyId(data.surveyId, data.accountId)
+
+    if (surveyResult) {
+      return surveyResult
+    } else {
       return {
         surveyId: res.value?.surveyId,
         question: res.value?.question,
