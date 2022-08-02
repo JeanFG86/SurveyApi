@@ -38,10 +38,19 @@ describe('SaveSurveyResult Controller', () => {
       date: new Date()
     }
     fakeSurveyResultModel = {
-      id: 'valid_id',
-      surveyId: 'valid_survey_id',
-      accountId: 'valid_account_id',
-      answer: 'valid_answer',
+      surveyId: 'any_survey_id',
+      question: 'any_question',
+      answers: [{
+        answer: 'any_answer',
+        count: 1,
+        percent: 50
+      },
+      {
+        answer: 'other_answer',
+        image: 'any_image',
+        count: 2,
+        percent: 20
+      }],
       date: new Date()
     }
     fakeLoadSurveyById.loadById.mockResolvedValue(fakeSurvey)

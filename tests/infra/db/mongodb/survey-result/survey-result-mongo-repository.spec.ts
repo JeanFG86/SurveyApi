@@ -97,8 +97,8 @@ describe('Survey Mongo Result Repository', () => {
       const account = await makeAccount()
       await surveyResultCollection.insertOne({
         date: new Date(),
-        surveyId: survey!.id,
-        accountId: account!.id,
+        surveyId: new ObjectId(survey!.id),
+        accountId: new ObjectId(account!.id),
         answer: survey!.answers[0].answer
       })
       await sut.save({

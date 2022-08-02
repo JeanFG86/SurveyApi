@@ -18,9 +18,22 @@ describe('DbSaveSurveyResult UseCase', () => {
       answer: 'any_answer',
       date: new Date()
     }
-    fakeSurveyResult = Object.assign({}, fakeSaveSurveyResult, {
-      id: 'any_id'
-    })
+    fakeSurveyResult = {
+      surveyId: 'any_survey_id',
+      question: 'any_question',
+      answers: [{
+        answer: 'any_answer',
+        count: 1,
+        percent: 50
+      },
+      {
+        answer: 'other_answer',
+        image: 'any_image',
+        count: 2,
+        percent: 20
+      }],
+      date: new Date()
+    }
     fakeSaveSurveyResultRepository = mock()
     fakeSaveSurveyResultRepository.save.mockResolvedValue(fakeSurveyResult)
   })
