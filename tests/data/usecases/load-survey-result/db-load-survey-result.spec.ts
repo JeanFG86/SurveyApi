@@ -40,4 +40,12 @@ describe('DbLoadSurveyResult UseCase', () => {
 
     expect(loadBySurveyIdSpy).toHaveBeenCalledWith('any_survey_id')
   })
+
+  it('Should throw if LoadSurveyResultRepository throws', async () => {
+    fakeLoadSurveyResultRepository.loadBySurveyId.mockRejectedValueOnce(new Error())
+
+    const promise = sut.load('')
+
+    await expect(promise).rejects.toThrow()
+  })
 })
