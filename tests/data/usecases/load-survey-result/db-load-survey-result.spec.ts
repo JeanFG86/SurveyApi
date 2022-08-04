@@ -44,8 +44,14 @@ describe('DbLoadSurveyResult UseCase', () => {
   it('Should throw if LoadSurveyResultRepository throws', async () => {
     fakeLoadSurveyResultRepository.loadBySurveyId.mockRejectedValueOnce(new Error())
 
-    const promise = sut.load('')
+    const promise = sut.load('any_survey_id')
 
     await expect(promise).rejects.toThrow()
+  })
+
+  it('Should return surveyResultModel on success', async () => {
+    const survey = await sut.load('any_survey_id')
+
+    await expect(survey).toEqual(fakeSurveyResult)
   })
 })

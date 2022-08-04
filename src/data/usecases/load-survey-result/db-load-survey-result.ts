@@ -5,7 +5,7 @@ import { LoadSurveyResult } from '@/domain/usecases/survey-result/load-survey-re
 export class DbLoadSurveyResult implements LoadSurveyResult {
   constructor (private readonly loadSurveyResultRepository: LoadSurveyResultRepository) {}
   async load (surveyId: string): Promise<SurveyResultModel | undefined> {
-    await this.loadSurveyResultRepository.loadBySurveyId(surveyId)
-    return await Promise.resolve(undefined)
+    const surveyResult = await this.loadSurveyResultRepository.loadBySurveyId(surveyId)
+    return surveyResult
   }
 }
