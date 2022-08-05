@@ -73,6 +73,14 @@ describe('DbSaveSurveyResult UseCase', () => {
     expect(loadBySurveyIdSpy).toHaveBeenCalledWith(fakeSaveSurveyResult.surveyId)
   })
 
+  it('Should throw if LoadSurveyResultRepository throws', async () => {
+    fakeLoadSurveyResultRepository.loadBySurveyId.mockRejectedValueOnce(new Error())
+
+    const promise = sut.save(fakeSaveSurveyResult)
+
+    await expect(promise).rejects.toThrow()
+  })
+
   it('Should return a surveyResult on success', async () => {
     const surveys = await sut.save(fakeSaveSurveyResult)
 
