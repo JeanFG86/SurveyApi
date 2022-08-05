@@ -11,6 +11,7 @@ describe('DbSaveSurveyResult UseCase', () => {
   let fakeSaveSurveyResult: SaveSurveyResultParams
   let fakeSaveSurveyResultRepository: MockProxy<SaveSurveyResultRepository>
   let fakeLoadSurveyResultRepository: MockProxy<LoadSurveyResultRepository>
+
   beforeAll(() => {
     MockDate.set(new Date())
     fakeSaveSurveyResult = {
@@ -35,6 +36,7 @@ describe('DbSaveSurveyResult UseCase', () => {
       }],
       date: new Date()
     }
+
     fakeSaveSurveyResultRepository = mock()
     fakeSaveSurveyResultRepository.save.mockResolvedValue()
     fakeLoadSurveyResultRepository = mock()

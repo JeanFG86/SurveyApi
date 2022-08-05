@@ -1,12 +1,15 @@
+import { LoadSurveyByIdRepository } from '@/data/protocols/db/survey'
 import { LoadSurveyResultRepository } from '@/data/protocols/db/survey-result'
 import { DbLoadSurveyResult } from '@/data/usecases/load-survey-result'
-import { SurveyResultModel } from '@/domain/models'
+import { SurveyModel, SurveyResultModel } from '@/domain/models'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('DbLoadSurveyResult UseCase', () => {
   let sut: DbLoadSurveyResult
   let fakeSurveyResult: SurveyResultModel
+  let fakeSurvey: SurveyModel
   let fakeLoadSurveyResultRepository: MockProxy<LoadSurveyResultRepository>
+  let fakeLoadSurveyByIdRepository: MockProxy<LoadSurveyByIdRepository>
 
   beforeAll(() => {
     fakeSurveyResult = {
@@ -25,12 +28,23 @@ describe('DbLoadSurveyResult UseCase', () => {
       }],
       date: new Date()
     }
+    fakeSurvey = {
+      id: 'any_id',
+      question: 'any_question',
+      answers: [{
+        image: 'any_image',
+        answer: 'any_answer'
+      }],
+      date: new Date()
+    }
     fakeLoadSurveyResultRepository = mock()
     fakeLoadSurveyResultRepository.loadBySurveyId.mockResolvedValue(fakeSurveyResult)
+    fakeLoadSurveyByIdRepository = mock()
+    fakeLoadSurveyByIdRepository.loadById.mockResolvedValue(fakeSurvey)
   })
 
   beforeEach(() => {
-    sut = new DbLoadSurveyResult(fakeLoadSurveyResultRepository)
+    sut = new DbLoadSurveyResult(fakeLoadSurveyResultRepository, fakeLoadSurveyByIdRepository)
   })
 
   it('Should call LoadSurveyResultRepository with correct values', async () => {
@@ -47,6 +61,15 @@ describe('DbLoadSurveyResult UseCase', () => {
     const promise = sut.load('any_survey_id')
 
     await expect(promise).rejects.toThrow()
+  })
+
+  it('Should call a LoadSurveyByIdRepository if LoadSurveyResultRepository returns undefined', async () => {
+    const loadByIdSpy = jest.spyOn(fakeLoadSurveyByIdRepository, 'loadById')
+    fakeLoadSurveyResultRepository.loadBySurveyId.mockResolvedValueOnce(undefined)
+
+    await sut.load('any_survey_id')
+
+    expect(loadByIdSpy).toHaveBeenCalledWith('any_survey_id')
   })
 
   it('Should return surveyResultModel on success', async () => {
