@@ -13,18 +13,18 @@ describe('DbLoadSurveyResult UseCase', () => {
 
   beforeAll(() => {
     fakeSurveyResult = {
-      surveyId: 'any_survey_id',
+      surveyId: 'any_id',
       question: 'any_question',
       answers: [{
         answer: 'any_answer',
-        count: 1,
-        percent: 50
+        count: 0,
+        percent: 0
       },
       {
         answer: 'other_answer',
         image: 'any_image',
-        count: 2,
-        percent: 20
+        count: 0,
+        percent: 0
       }],
       date: new Date()
     }
@@ -32,8 +32,11 @@ describe('DbLoadSurveyResult UseCase', () => {
       id: 'any_id',
       question: 'any_question',
       answers: [{
-        image: 'any_image',
         answer: 'any_answer'
+      },
+      {
+        answer: 'other_answer',
+        image: 'any_image'
       }],
       date: new Date()
     }
@@ -70,6 +73,14 @@ describe('DbLoadSurveyResult UseCase', () => {
     await sut.load('any_survey_id')
 
     expect(loadByIdSpy).toHaveBeenCalledWith('any_survey_id')
+  })
+
+  it('Should return surveyResultModel if all answers count 0 if LoadSurveyResultRepository returns undefined', async () => {
+    fakeLoadSurveyResultRepository.loadBySurveyId.mockResolvedValueOnce(undefined)
+
+    const survey = await sut.load('any_id')
+
+    await expect(survey).toEqual(fakeSurveyResult)
   })
 
   it('Should return surveyResultModel on success', async () => {
