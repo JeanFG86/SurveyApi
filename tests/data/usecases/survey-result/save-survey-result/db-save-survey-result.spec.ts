@@ -1,4 +1,4 @@
-import { SaveSurveyResultRepository } from '@/data/protocols/db/survey-result'
+import { LoadSurveyResultRepository, SaveSurveyResultRepository } from '@/data/protocols/db/survey-result'
 import { SurveyResultModel } from '@/domain/models'
 import { SaveSurveyResultParams } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
@@ -10,6 +10,7 @@ describe('DbSaveSurveyResult UseCase', () => {
   let fakeSurveyResult: SurveyResultModel
   let fakeSaveSurveyResult: SaveSurveyResultParams
   let fakeSaveSurveyResultRepository: MockProxy<SaveSurveyResultRepository>
+  let fakeLoadSurveyResultRepository: MockProxy<LoadSurveyResultRepository>
   beforeAll(() => {
     MockDate.set(new Date())
     fakeSaveSurveyResult = {
@@ -35,11 +36,13 @@ describe('DbSaveSurveyResult UseCase', () => {
       date: new Date()
     }
     fakeSaveSurveyResultRepository = mock()
-    fakeSaveSurveyResultRepository.save.mockResolvedValue(fakeSurveyResult)
+    fakeSaveSurveyResultRepository.save.mockResolvedValue()
+    fakeLoadSurveyResultRepository = mock()
+    fakeLoadSurveyResultRepository.loadBySurveyId.mockResolvedValue(fakeSurveyResult)
   })
 
   beforeEach(() => {
-    sut = new DbSaveSurveyResult(fakeSaveSurveyResultRepository)
+    sut = new DbSaveSurveyResult(fakeSaveSurveyResultRepository, fakeLoadSurveyResultRepository)
   })
 
   afterAll(() => {
@@ -60,6 +63,14 @@ describe('DbSaveSurveyResult UseCase', () => {
     const promise = sut.save(fakeSaveSurveyResult)
 
     await expect(promise).rejects.toThrow()
+  })
+
+  it('Should call LoadSurveyResultRepository with correct values', async () => {
+    const loadBySurveyIdSpy = jest.spyOn(fakeLoadSurveyResultRepository, 'loadBySurveyId')
+
+    await sut.save(fakeSaveSurveyResult)
+
+    expect(loadBySurveyIdSpy).toHaveBeenCalledWith(fakeSaveSurveyResult.surveyId)
   })
 
   it('Should return a surveyResult on success', async () => {
