@@ -4,7 +4,7 @@ import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 import { LoadSurveyResultController } from '@/presentation/controllers/survey-result/load-survey-result'
 import { HttpRequest } from '@/presentation/protocols'
-import { forbidden } from '@/presentation/helpers/http'
+import { forbidden, serverError } from '@/presentation/helpers/http'
 import { InvalidParamError } from '@/presentation/errors'
 
 describe('LoadSurveyResult Controller', () => {
@@ -59,5 +59,13 @@ describe('LoadSurveyResult Controller', () => {
     const httpResponse = await sut.handle(fakeRequest)
 
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
+  })
+
+  it('Should return 500 if LoadSurveyById throws', async () => {
+    fakeLoadSurveyById.loadById.mockRejectedValueOnce(new Error())
+
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
