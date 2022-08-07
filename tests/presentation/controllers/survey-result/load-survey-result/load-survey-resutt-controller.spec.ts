@@ -4,6 +4,8 @@ import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 import { LoadSurveyResultController } from '@/presentation/controllers/survey-result/load-survey-result'
 import { HttpRequest } from '@/presentation/protocols'
+import { forbidden } from '@/presentation/helpers/http'
+import { InvalidParamError } from '@/presentation/errors'
 
 describe('LoadSurveyResult Controller', () => {
   let sut: LoadSurveyResultController
@@ -49,5 +51,13 @@ describe('LoadSurveyResult Controller', () => {
     await sut.handle(fakeRequest)
 
     expect(loadByIdSpy).toBeCalledWith('any_id')
+  })
+
+  it('Should return 403 if LoadSurveyById returns undefined', async () => {
+    fakeLoadSurveyById.loadById.mockResolvedValueOnce(undefined)
+
+    const httpResponse = await sut.handle(fakeRequest)
+
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
   })
 })
