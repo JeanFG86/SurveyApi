@@ -57,9 +57,10 @@ describe('DbAuthentication UseCase', () => {
   it('Should return undefined if LoadAccountByEmailRepository returns undefined', async () => {
     fakeLoadAccount.loadByEmail.mockResolvedValueOnce(null)
 
-    const accessToken = await sut.auth(fakeAuthentication)
+    const model = await sut.auth(fakeAuthentication)
 
-    expect(accessToken.token).toBeUndefined()
+    expect(model?.accessToken).toBeUndefined()
+    expect(model?.name).toBeUndefined()
   })
 
   it('Should call HashComparer with correct values', async () => {
@@ -81,9 +82,10 @@ describe('DbAuthentication UseCase', () => {
   it('Should return undefined if HashComparer returns false', async () => {
     fakeHashCompare.compare.mockResolvedValueOnce(false)
 
-    const accessToken = await sut.auth(fakeAuthentication)
+    const model = await sut.auth(fakeAuthentication)
 
-    expect(accessToken.token).toBeUndefined()
+    expect(model?.accessToken).toBeUndefined()
+    expect(model?.name).toBeUndefined()
   })
 
   it('Should call Encrypter with correct id', async () => {
@@ -102,10 +104,11 @@ describe('DbAuthentication UseCase', () => {
     await expect(promise).rejects.toThrow()
   })
 
-  it('Should returns a Token on success', async () => {
+  it('Should returns an Authentication model on success', async () => {
     const accessToken = await sut.auth(fakeAuthentication)
 
-    expect(accessToken).toEqual({ token: 'any_token' })
+    expect(accessToken?.accessToken).toBe('any_token')
+    expect(accessToken?.name).toBe('any_name')
   })
 
   it('Should call UpdateAccessTokenRepository with correct values', async () => {

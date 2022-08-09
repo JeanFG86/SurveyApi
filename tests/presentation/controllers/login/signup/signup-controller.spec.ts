@@ -17,7 +17,7 @@ describe('SignUp Controller', () => {
     fakeValidation = mock()
     fakeValidation.validate.mockReturnValue(undefined)
     fakeAuthentication = mock()
-    fakeAuthentication.auth.mockResolvedValue({ token: 'any_token' })
+    fakeAuthentication.auth.mockResolvedValue({ accessToken: 'any_token', name: 'any_name' })
     addAccount = mock()
     fakeAccount = {
       id: 'any_id',
@@ -71,7 +71,7 @@ describe('SignUp Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest)
 
-    expect(httpResponse).toEqual(ok({ token: 'any_token' }))
+    expect(httpResponse).toEqual(ok({ accessToken: 'any_token', name: 'any_name' }))
   })
 
   it('should call Validation with correct values', async () => {

@@ -20,7 +20,7 @@ describe('Login Controller', () => {
         password: 'any_password'
       }
     }
-    fakeAuthentication.auth.mockResolvedValue({ token: 'any_token' })
+    fakeAuthentication.auth.mockResolvedValue({ accessToken: 'any_token', name: 'any_name' })
   })
 
   beforeEach(() => {
@@ -36,7 +36,7 @@ describe('Login Controller', () => {
   })
 
   it('Should return 401 if invalid credentials are provided', async () => {
-    fakeAuthentication.auth.mockResolvedValueOnce({ token: undefined })
+    fakeAuthentication.auth.mockResolvedValueOnce(undefined)
 
     const httpResponse = await sut.handle(fakeRequest)
 
@@ -54,7 +54,7 @@ describe('Login Controller', () => {
   it('Should return 200 if valid credentials are provided', async () => {
     const httpResponse = await sut.handle(fakeRequest)
 
-    expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }))
+    expect(httpResponse).toEqual(ok({ accessToken: 'any_token', name: 'any_name' }))
   })
 
   it('should call Validation with correct values', async () => {

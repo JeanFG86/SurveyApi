@@ -12,13 +12,13 @@ export class LoginController implements Controller {
         return badRequest(error)
       }
       const { email, password } = httpRequest.body
-      const { token } = await this.authentication.auth({
+      const authenticationModel = await this.authentication.auth({
         email, password
       })
-      if (token === undefined) {
+      if (authenticationModel === undefined) {
         return unauthorized()
       }
-      return ok({ accessToken: token })
+      return ok(authenticationModel)
     } catch (error) {
       return serverError(new Error())
     }

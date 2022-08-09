@@ -9,7 +9,7 @@ export class DbAuthentication implements Authentication {
     private readonly encrypter: Encrypter,
     private readonly updateAccessTokenRepository: UpdateAccessTokenRepository) { }
 
-  async auth (input: Authentication.Input): Promise<Authentication.OutPut> {
+  async auth (input: Authentication.Input): Promise<Authentication.Output> {
     const account = await this.loadAccountByEmailRepository.loadByEmail(input.email)
     if (account !== null) {
       const isValid = await this.hashComparer.compare({
@@ -19,9 +19,12 @@ export class DbAuthentication implements Authentication {
       if (isValid) {
         const token = await this.encrypter.encrypt({ value: account.id })
         await this.updateAccessTokenRepository.updateAccessToken({ id: account.id, token: token.token! })
-        return token
+        return {
+          accessToken: token.token!,
+          name: account.name
+        }
       }
     }
-    return await Promise.resolve({ token: undefined })
+    return await Promise.resolve(undefined)
   }
 }
