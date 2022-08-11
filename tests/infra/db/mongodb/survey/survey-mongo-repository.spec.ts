@@ -101,8 +101,6 @@ describe('Survey Mongo Repository', () => {
       )
       const surveys = await sut.loadAll(account!.id)
 
-      console.log(surveys[0])
-      console.log(surveys[1])
       expect(surveys.length).toBe(2)
       expect(surveys[0].id).toBeTruthy()
       expect(surveys[0].question).toBe('any_question')
