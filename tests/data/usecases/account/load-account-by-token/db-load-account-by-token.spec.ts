@@ -45,9 +45,9 @@ describe('DbLoadAccountByToken Usecase', () => {
   it('Should throw Decrypter throws', async () => {
     fakeDecrypter.decrypt.mockRejectedValueOnce(new Error())
 
-    const promise = sut.load({ accessToken: 'any_token', role: 'any_role' })
+    const account = await sut.load({ accessToken: 'any_token', role: 'any_role' })
 
-    await expect(promise).rejects.toThrow()
+    await expect(account).toBeUndefined()
   })
 
   it('Should call LoadAccountByTokenRepository with correct values', async () => {
