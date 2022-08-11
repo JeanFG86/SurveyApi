@@ -43,13 +43,13 @@ describe('DbLoadSurveys Usecase', () => {
   it('Should call LoadSurveysRepository', async () => {
     const loadAllSpy = jest.spyOn(fakeLoadSurveysRepository, 'loadAll')
 
-    await sut.load()
+    await sut.load('any_id')
 
-    expect(loadAllSpy).toHaveBeenCalledWith()
+    expect(loadAllSpy).toHaveBeenCalledWith('any_id')
   })
 
   it('Should return a list of Surveys on success', async () => {
-    const surveys = await sut.load()
+    const surveys = await sut.load('any_id')
 
     expect(surveys).toEqual(fakeSurveys)
   })
@@ -57,7 +57,7 @@ describe('DbLoadSurveys Usecase', () => {
   it('Should throw LoadSurveysRepository throws', async () => {
     fakeLoadSurveysRepository.loadAll.mockRejectedValueOnce(new Error())
 
-    const promise = sut.load()
+    const promise = sut.load('any_id')
 
     await expect(promise).rejects.toThrow()
   })
