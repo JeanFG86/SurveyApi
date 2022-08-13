@@ -44,13 +44,15 @@ describe('LoadSurveyResult Controller', () => {
       answers: [{
         answer: 'any_answer',
         count: 1,
-        percent: 50
+        percent: 50,
+        isCurrentAccountAnswer: false
       },
       {
         answer: 'other_answer',
         image: 'any_image',
         count: 2,
-        percent: 20
+        percent: 20,
+        isCurrentAccountAnswer: false
       }],
       date: new Date()
     }
@@ -95,7 +97,7 @@ describe('LoadSurveyResult Controller', () => {
 
     await sut.handle(fakeRequest)
 
-    expect(loadSpy).toHaveBeenCalledWith('any_id')
+    expect(loadSpy).toHaveBeenCalledWith('any_id', 'any_account_id')
   })
 
   it('Should return 500 if LoadSurveyResult throws', async () => {

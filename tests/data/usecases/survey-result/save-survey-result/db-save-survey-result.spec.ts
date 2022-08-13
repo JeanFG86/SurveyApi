@@ -26,13 +26,15 @@ describe('DbSaveSurveyResult UseCase', () => {
       answers: [{
         answer: 'any_answer',
         count: 1,
-        percent: 50
+        percent: 50,
+        isCurrentAccountAnswer: false
       },
       {
         answer: 'other_answer',
         image: 'any_image',
         count: 2,
-        percent: 20
+        percent: 20,
+        isCurrentAccountAnswer: false
       }],
       date: new Date()
     }
@@ -72,7 +74,7 @@ describe('DbSaveSurveyResult UseCase', () => {
 
     await sut.save(fakeSaveSurveyResult)
 
-    expect(loadBySurveyIdSpy).toHaveBeenCalledWith(fakeSaveSurveyResult.surveyId)
+    expect(loadBySurveyIdSpy).toHaveBeenCalledWith(fakeSaveSurveyResult.surveyId, fakeSaveSurveyResult.accountId)
   })
 
   it('Should throw if LoadSurveyResultRepository throws', async () => {

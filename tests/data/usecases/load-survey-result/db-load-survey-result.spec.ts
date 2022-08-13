@@ -18,13 +18,15 @@ describe('DbLoadSurveyResult UseCase', () => {
       answers: [{
         answer: 'any_answer',
         count: 0,
-        percent: 0
+        percent: 0,
+        isCurrentAccountAnswer: false
       },
       {
         answer: 'other_answer',
         image: 'any_image',
         count: 0,
-        percent: 0
+        percent: 0,
+        isCurrentAccountAnswer: false
       }],
       date: new Date()
     }
@@ -53,15 +55,15 @@ describe('DbLoadSurveyResult UseCase', () => {
   it('Should call LoadSurveyResultRepository with correct values', async () => {
     const loadBySurveyIdSpy = jest.spyOn(fakeLoadSurveyResultRepository, 'loadBySurveyId')
 
-    await sut.load('any_survey_id')
+    await sut.load('any_survey_id', 'any_account_id')
 
-    expect(loadBySurveyIdSpy).toHaveBeenCalledWith('any_survey_id')
+    expect(loadBySurveyIdSpy).toHaveBeenCalledWith('any_survey_id', 'any_account_id')
   })
 
   it('Should throw if LoadSurveyResultRepository throws', async () => {
     fakeLoadSurveyResultRepository.loadBySurveyId.mockRejectedValueOnce(new Error())
 
-    const promise = sut.load('any_survey_id')
+    const promise = sut.load('any_survey_id', 'any_account_id')
 
     await expect(promise).rejects.toThrow()
   })
@@ -70,7 +72,7 @@ describe('DbLoadSurveyResult UseCase', () => {
     const loadByIdSpy = jest.spyOn(fakeLoadSurveyByIdRepository, 'loadById')
     fakeLoadSurveyResultRepository.loadBySurveyId.mockResolvedValueOnce(undefined)
 
-    await sut.load('any_survey_id')
+    await sut.load('any_survey_id', 'any_account_id')
 
     expect(loadByIdSpy).toHaveBeenCalledWith('any_survey_id')
   })
@@ -78,13 +80,13 @@ describe('DbLoadSurveyResult UseCase', () => {
   it('Should return surveyResultModel if all answers count 0 if LoadSurveyResultRepository returns undefined', async () => {
     fakeLoadSurveyResultRepository.loadBySurveyId.mockResolvedValueOnce(undefined)
 
-    const survey = await sut.load('any_id')
+    const survey = await sut.load('any_id', 'any_account_id')
 
     await expect(survey).toEqual(fakeSurveyResult)
   })
 
   it('Should return surveyResultModel on success', async () => {
-    const survey = await sut.load('any_survey_id')
+    const survey = await sut.load('any_survey_id', 'any_account_id')
 
     await expect(survey).toEqual(fakeSurveyResult)
   })

@@ -20,7 +20,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
     })
   }
 
-  async loadBySurveyId (surveyId: string): Promise<SurveyResultModel | undefined> {
+  async loadBySurveyId (surveyId: string, accountId: string): Promise<SurveyResultModel | undefined> {
     const surveyResultCollection = MongoHelper.getCollection('surveyResults')
     const query = new QueryBuilder()
       .match({
@@ -58,12 +58,12 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         },
         count: {
           $sum: 1
+        },
+        currentAccountAnswer: {
+          $push: {
+            $cond: [{ $eq: ['$data.accountId', new ObjectId(accountId)] }, '$data.answer', '$invalid']
+          }
         }
-        // currentAccountAnswer: {
-        //   $push: {
-        //    $cond: [{ $eq: ['$data.accountId', new ObjectId('')] }, '$data.answer', '$invalid']
-        //   }
-      // }
       })
       .project({
         _id: 0,
@@ -97,14 +97,14 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
                     },
                     else: 0
                   }
+                },
+                isCurrentAccountAnswerCount: {
+                  $cond: [{
+                    $eq: ['$$item.answer', {
+                      $arrayElemAt: ['$currentAccountAnswer', 0]
+                    }]
+                  }, 1, 0]
                 }
-              //  isCurrentAccountAnswerCount: {
-                //     $cond: [{
-                //       $eq: ['$$item.answer', {
-                //         $arrayElemAt: ['$currentAccountAnswer', 0]
-              //      }]
-              //    }, 1, 0]
-              //  }
               }]
             }
           }
@@ -151,10 +151,10 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         },
         percent: {
           $sum: '$answers.percent'
+        },
+        isCurrentAccountAnswerCount: {
+          $sum: '$answers.isCurrentAccountAnswerCount'
         }
-        // isCurrentAccountAnswerCount: {
-        //  $sum: '$answers.isCurrentAccountAnswerCount'
-        // }
       })
       .project({
         _id: 0,
@@ -165,10 +165,10 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
           answer: '$_id.answer',
           image: '$_id.image',
           count: '$count',
-          percent: '$percent'
-          // isCurrentAccountAnswer: {
-          //  $eq: ['$isCurrentAccountAnswerCount', 1]
-          // }
+          percent: '$percent',
+          isCurrentAccountAnswer: {
+            $eq: ['$isCurrentAccountAnswerCount', 1]
+          }
         }
       })
       .sort({

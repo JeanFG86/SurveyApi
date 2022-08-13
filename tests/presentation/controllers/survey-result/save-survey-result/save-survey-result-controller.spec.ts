@@ -43,13 +43,15 @@ describe('SaveSurveyResult Controller', () => {
       answers: [{
         answer: 'any_answer',
         count: 1,
-        percent: 50
+        percent: 50,
+        isCurrentAccountAnswer: false
       },
       {
         answer: 'other_answer',
         image: 'any_image',
         count: 2,
-        percent: 20
+        percent: 20,
+        isCurrentAccountAnswer: false
       }],
       date: new Date()
     }
