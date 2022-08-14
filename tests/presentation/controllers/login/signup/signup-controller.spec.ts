@@ -2,7 +2,7 @@ import { AccountModel } from '@/domain/models'
 import { AddAccount, Authentication } from '@/domain/usecases'
 import { SignUpController } from '@/presentation/controllers/login/signup'
 import { EmailInUseError, MissingParamError, ServerError } from '@/presentation/errors'
-import { HttpRequest, Validation } from '@/presentation/protocols'
+import { Validation } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http'
 
@@ -10,7 +10,7 @@ describe('SignUp Controller', () => {
   let sut: SignUpController
   let fakeValidation: MockProxy<Validation>
   let addAccount: MockProxy<AddAccount>
-  let fakeRequest: MockProxy<HttpRequest>
+  let fakeRequest: SignUpController.Request
   let fakeAccount: MockProxy<AccountModel>
   let fakeAuthentication: MockProxy<Authentication>
   beforeAll(() => {
@@ -27,12 +27,10 @@ describe('SignUp Controller', () => {
     }
     addAccount.add.mockResolvedValue(fakeAccount)
     fakeRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      passwordConfirmation: 'any_password'
     }
   })
 
@@ -61,12 +59,10 @@ describe('SignUp Controller', () => {
 
   it('should return 200 if valid data is provided', async () => {
     const httpRequest = {
-      body: {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
-        passwordConfirmation: 'valid_password'
-      }
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password',
+      passwordConfirmation: 'valid_password'
     }
 
     const httpResponse = await sut.handle(httpRequest)
@@ -78,7 +74,7 @@ describe('SignUp Controller', () => {
     const validateSpy = jest.spyOn(fakeValidation, 'validate')
 
     await sut.handle(fakeRequest)
-    expect(validateSpy).toHaveBeenCalledWith(fakeRequest.body)
+    expect(validateSpy).toHaveBeenCalledWith(fakeRequest)
   })
 
   it('should return 400 if validation fails', async () => {
@@ -107,12 +103,10 @@ describe('SignUp Controller', () => {
 
   it('should return 403 if AddAccount returns undefined', async () => {
     const httpRequest = {
-      body: {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
-        passwordConfirmation: 'valid_password'
-      }
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password',
+      passwordConfirmation: 'valid_password'
     }
 
     addAccount.add.mockResolvedValueOnce(undefined)
