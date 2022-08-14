@@ -3,13 +3,12 @@ import { LoadSurveyById, SaveSurveyResult } from '@/domain/usecases'
 import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result'
 import { InvalidParamError } from '@/presentation/errors'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http'
-import { HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 
 describe('SaveSurveyResult Controller', () => {
   let sut: SaveSurveyResultController
-  let fakeRequest: HttpRequest
+  let fakeRequest: SaveSurveyResultController.Request
   let fakeSurvey: SurveyModel
   let fakeSurveyResultModel: SurveyResultModel
   let fakeLoadSurveyById: MockProxy<LoadSurveyById>
@@ -20,12 +19,8 @@ describe('SaveSurveyResult Controller', () => {
     fakeLoadSurveyById = mock()
     fakeSaveSurveyResult = mock()
     fakeRequest = {
-      params: {
-        surveyId: 'any_survey_id'
-      },
-      body: {
-        answer: 'any_answer'
-      },
+      surveyId: 'any_survey_id',
+      answer: 'any_answer',
       accountId: 'any_account_id'
     }
     fakeSurvey = {
@@ -93,12 +88,9 @@ describe('SaveSurveyResult Controller', () => {
 
   it('Should return 403 if and invalid answer is provided', async () => {
     const httpResponse = await sut.handle({
-      params: {
-        surveyId: 'any_survey_id'
-      },
-      body: {
-        answer: 'wrong_answer'
-      }
+      surveyId: 'any_survey_id',
+      accountId: 'any_id',
+      answer: 'wrong_answer'
     })
 
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('answer')))

@@ -1,19 +1,18 @@
 import { SurveyModel, SurveyResultModel } from '@/domain/models'
 import { LoadSurveyById } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
-import MockDate from 'mockdate'
 import { LoadSurveyResultController } from '@/presentation/controllers/survey-result/load-survey-result'
-import { HttpRequest } from '@/presentation/protocols'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http'
 import { InvalidParamError } from '@/presentation/errors'
 import { LoadSurveyResult } from '@/domain/usecases/survey-result/load-survey-result'
+import MockDate from 'mockdate'
 
 describe('LoadSurveyResult Controller', () => {
   let sut: LoadSurveyResultController
   let fakeSurvey: SurveyModel
   let fakeLoadSurveyById: MockProxy<LoadSurveyById>
   let fakeLoadSurveyResult: MockProxy<LoadSurveyResult>
-  let fakeRequest: HttpRequest
+  let fakeRequest: LoadSurveyResultController.Request
   let fakeSurveyResultModel: SurveyResultModel
 
   beforeAll(() => {
@@ -30,12 +29,7 @@ describe('LoadSurveyResult Controller', () => {
       date: new Date()
     }
     fakeRequest = {
-      params: {
-        surveyId: 'any_id'
-      },
-      body: {
-        answer: 'any_answer'
-      },
+      surveyId: 'any_id',
       accountId: 'any_account_id'
     }
     fakeSurveyResultModel = {
@@ -73,7 +67,7 @@ describe('LoadSurveyResult Controller', () => {
 
     await sut.handle(fakeRequest)
 
-    expect(loadByIdSpy).toHaveBeenCalledWith('any_id')
+    expect(loadByIdSpy).toHaveBeenCalledWith(fakeRequest.surveyId)
   })
 
   it('Should return 403 if LoadSurveyById returns undefined', async () => {
@@ -97,7 +91,7 @@ describe('LoadSurveyResult Controller', () => {
 
     await sut.handle(fakeRequest)
 
-    expect(loadSpy).toHaveBeenCalledWith('any_id', 'any_account_id')
+    expect(loadSpy).toHaveBeenCalledWith(fakeRequest.surveyId, fakeRequest.accountId)
   })
 
   it('Should return 500 if LoadSurveyResult throws', async () => {

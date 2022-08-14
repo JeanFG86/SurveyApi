@@ -2,7 +2,6 @@ import { SurveyModel } from '@/domain/models'
 import { LoadSurveys } from '@/domain/usecases/survey/load-surveys'
 import { LoadSurveysController } from '@/presentation/controllers/survey/load-surveys'
 import { noContent, ok, serverError } from '@/presentation/helpers/http'
-import { HttpRequest } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 
@@ -10,7 +9,7 @@ describe('LoadSurveys Controller', () => {
   let sut: LoadSurveysController
   let fakeLoadSurveys: MockProxy<LoadSurveys>
   let fakeSurveys: SurveyModel[]
-  let fakeRequest: HttpRequest
+  let fakeRequest: LoadSurveysController.Request
 
   beforeAll(() => {
     MockDate.set(new Date())

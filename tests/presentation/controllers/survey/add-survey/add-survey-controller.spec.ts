@@ -1,4 +1,4 @@
-import { HttpRequest, Validation } from '@/presentation/protocols'
+import { Validation } from '@/presentation/protocols'
 import { AddSurveyController } from '@/presentation/controllers/survey/add-survey'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http'
@@ -7,7 +7,7 @@ import MockDate from 'mockdate'
 
 describe('AddSurvey Controller', () => {
   let sut: AddSurveyController
-  let fakeRequest: HttpRequest
+  let fakeRequest: AddSurveyController.Request
   let fakeValidation: MockProxy<Validation>
   let fakeAddSurvey: MockProxy<AddSurvey>
   beforeAll(() => {
@@ -16,14 +16,11 @@ describe('AddSurvey Controller', () => {
     fakeValidation.validate.mockReturnValue(undefined)
     fakeAddSurvey = mock()
     fakeRequest = {
-      body: {
-        question: 'any_question',
-        answers: [{
-          image: 'any_image',
-          answer: 'any_answer'
-        }],
-        date: new Date()
-      }
+      question: 'any_question',
+      answers: [{
+        image: 'any_image',
+        answer: 'any_answer'
+      }]
     }
   })
 
@@ -40,7 +37,7 @@ describe('AddSurvey Controller', () => {
 
     await sut.handle(fakeRequest)
 
-    expect(validateSpy).toHaveBeenCalledWith(fakeRequest.body)
+    expect(validateSpy).toHaveBeenCalledWith(fakeRequest)
   })
 
   it('should return 400 if validation fails', async () => {
@@ -56,7 +53,7 @@ describe('AddSurvey Controller', () => {
 
     await sut.handle(fakeRequest)
 
-    expect(addSpy).toHaveBeenCalledWith(fakeRequest.body)
+    expect(addSpy).toHaveBeenCalledWith({ ...fakeRequest, date: new Date() })
   })
 
   it('Should return 500 if AddSurvey throws', async () => {
