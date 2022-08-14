@@ -2,7 +2,6 @@ import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/proto
 import { Hasher } from '@/data/protocols/criptograpfy'
 import { DbAddAccount } from '@/data/usecases/account/add-account'
 import { AccountModel } from '@/domain/models'
-import { AddAccountParams } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('DbAddAccount Usecase', () => {
@@ -10,7 +9,7 @@ describe('DbAddAccount Usecase', () => {
   let encrypt: MockProxy<Hasher>
   let fakeAccount: MockProxy<AccountModel>
   let fakeAccountRepository: MockProxy<AddAccountRepository>
-  let fakeAccountData: MockProxy<AddAccountParams>
+  let fakeAccountData: AddAccountRepository.Params
   let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
   beforeAll(() => {
     fakeLoadAccount = mock()
@@ -72,10 +71,10 @@ describe('DbAddAccount Usecase', () => {
     await expect(promise).rejects.toThrow()
   })
 
-  it('Should return an account on success', async () => {
-    const account = await sut.add(fakeAccountData)
+  it('Should return true on success', async () => {
+    const isValid = await sut.add(fakeAccountData)
 
-    expect(account).toEqual(fakeAccount)
+    expect(isValid).toBeTruthy()
   })
 
   it('Should call LoadAccountByEmailRepository with correct email', async () => {

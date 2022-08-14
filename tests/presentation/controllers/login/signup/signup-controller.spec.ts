@@ -1,4 +1,3 @@
-import { AccountModel } from '@/domain/models'
 import { AddAccount, Authentication } from '@/domain/usecases'
 import { SignUpController } from '@/presentation/controllers/login/signup'
 import { EmailInUseError, MissingParamError, ServerError } from '@/presentation/errors'
@@ -11,7 +10,6 @@ describe('SignUp Controller', () => {
   let fakeValidation: MockProxy<Validation>
   let addAccount: MockProxy<AddAccount>
   let fakeRequest: SignUpController.Request
-  let fakeAccount: MockProxy<AccountModel>
   let fakeAuthentication: MockProxy<Authentication>
   beforeAll(() => {
     fakeValidation = mock()
@@ -19,13 +17,8 @@ describe('SignUp Controller', () => {
     fakeAuthentication = mock()
     fakeAuthentication.auth.mockResolvedValue({ accessToken: 'any_token', name: 'any_name' })
     addAccount = mock()
-    fakeAccount = {
-      id: 'any_id',
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password'
-    }
-    addAccount.add.mockResolvedValue(fakeAccount)
+
+    addAccount.add.mockResolvedValue(true)
     fakeRequest = {
       name: 'any_name',
       email: 'any_email@mail.com',
