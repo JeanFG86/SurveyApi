@@ -4,13 +4,12 @@ import { AuthMiddleware } from '@/presentation/middlewares'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { LoadAccountByToken } from '@/domain/usecases'
 import { AccountModel } from '@/domain/models'
-import { HttpRequest } from '../protocols'
 
 describe('Auth Middleware', () => {
   let sut: AuthMiddleware
   let fakeLoadAccountByToken: MockProxy<LoadAccountByToken>
   let fakeAccount: AccountModel
-  let fakeRequest: HttpRequest
+  let fakeRequest: AuthMiddleware.Request
   let role: string
   beforeAll(() => {
     fakeLoadAccountByToken = mock()
@@ -23,9 +22,7 @@ describe('Auth Middleware', () => {
     fakeLoadAccountByToken.load.mockResolvedValue(fakeAccount)
 
     fakeRequest = {
-      headers: {
-        'x-access-token': 'any_token'
-      }
+      accessToken: 'any_token'
     }
     role = 'any_role'
   })

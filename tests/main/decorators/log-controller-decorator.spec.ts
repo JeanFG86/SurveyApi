@@ -2,14 +2,14 @@ import { LogErrorRepository } from '@/data/protocols/db/log'
 import { AccountModel } from '@/domain/models'
 import { LogControllerDecorator } from '@/main/decorators'
 import { ok, serverError } from '@/presentation/helpers/http'
-import { Controller, HttpRequest } from '@/presentation/protocols'
+import { Controller } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('LogController Decorator', () => {
   let sut: LogControllerDecorator
   let fakeController: MockProxy<Controller>
   let fakeLogErrorRepository: MockProxy<LogErrorRepository>
-  let fakeRequest: MockProxy<HttpRequest>
+  let fakeRequest: any
   let fakeAccount: MockProxy<AccountModel>
   let fakeError: Error
 
@@ -25,12 +25,10 @@ describe('LogController Decorator', () => {
     fakeLogErrorRepository = mock()
     fakeLogErrorRepository.logError.mockResolvedValue(new Promise(resolve => resolve()))
     fakeRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      passwordConfirmation: 'any_password'
     }
     fakeError = new Error()
     fakeError.stack = 'any_stack'
