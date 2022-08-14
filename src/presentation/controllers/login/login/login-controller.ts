@@ -24,6 +24,7 @@ export class LoginController implements Controller {
     }
   }
 }
+// teste
 
 export namespace LoginController {
   export type Request = {
