@@ -2,23 +2,21 @@ import { Authentication } from '@/domain/usecases'
 import { LoginController } from '@/presentation/controllers/login/login'
 import { MissingParamError } from '@/presentation/errors'
 import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers/http'
-import { Validation, HttpRequest } from '@/presentation/protocols'
+import { Validation } from '@/presentation/protocols'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('Login Controller', () => {
   let sut: LoginController
   let fakeValidation: MockProxy<Validation>
-  let fakeRequest: MockProxy<HttpRequest>
+  let fakeRequest: LoginController.Request
   let fakeAuthentication: MockProxy<Authentication>
   beforeAll(() => {
     fakeValidation = mock()
     fakeValidation.validate.mockReturnValue(undefined)
     fakeAuthentication = mock()
     fakeRequest = {
-      body: {
-        email: 'any_email@mail.com',
-        password: 'any_password'
-      }
+      email: 'any_email@mail.com',
+      password: 'any_password'
     }
     fakeAuthentication.auth.mockResolvedValue({ accessToken: 'any_token', name: 'any_name' })
   })
@@ -61,7 +59,7 @@ describe('Login Controller', () => {
     const validateSpy = jest.spyOn(fakeValidation, 'validate')
 
     await sut.handle(fakeRequest)
-    expect(validateSpy).toHaveBeenCalledWith(fakeRequest.body)
+    expect(validateSpy).toHaveBeenCalledWith(fakeRequest)
   })
 
   it('should return 400 if validation fails', async () => {
