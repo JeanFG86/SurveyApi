@@ -4,7 +4,7 @@ import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { ObjectId } from 'mongodb'
 
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository, LoadAccountByTokenRepository {
-  async loadByToken (input: LoadAccountByTokenRepository.Input): Promise<AccountModel | null> {
+  async loadByToken (input: LoadAccountByTokenRepository.Input): Promise<LoadAccountByTokenRepository.Result> {
     const accountCollection = MongoHelper.getCollection('accounts')
     const account = await accountCollection.findOne(
       {
@@ -14,14 +14,14 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
         }, {
           role: 'admin'
         }]
-
+      }, {
+        projection: {
+          _id: 1
+        }
       })
     if (account !== null) {
       const accountReturn = {
-        id: account._id.toString(),
-        name: account.name.toString(),
-        email: account.email.toString(),
-        password: account.password.toString()
+        id: account._id.toString()
       }
       return accountReturn
     }
