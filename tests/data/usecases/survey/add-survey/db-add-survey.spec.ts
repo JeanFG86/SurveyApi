@@ -1,12 +1,12 @@
 import { AddSurveyRepository } from '@/data/protocols/db/survey'
 import { DbAddSurvey } from '@/data/usecases/survey/add-survey'
-import { AddSurveyParams } from '@/domain/usecases'
+import { AddSurvey } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 
 describe('DbAddSurvey UseCase', () => {
   let sut: DbAddSurvey
-  let fakeSurveyData: AddSurveyParams
+  let fakeSurveyData: AddSurvey.Params
   let fakeAddSurveyRepository: MockProxy<AddSurveyRepository>
   beforeAll(() => {
     MockDate.set(new Date())
