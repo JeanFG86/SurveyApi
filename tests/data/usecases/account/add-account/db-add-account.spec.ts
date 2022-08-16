@@ -1,13 +1,11 @@
 import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/protocols/db/account'
 import { Hasher } from '@/data/protocols/criptograpfy'
 import { DbAddAccount } from '@/data/usecases/account/add-account'
-import { AccountModel } from '@/domain/models'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('DbAddAccount Usecase', () => {
   let sut: DbAddAccount
   let encrypt: MockProxy<Hasher>
-  let fakeAccount: MockProxy<AccountModel>
   let fakeAccountRepository: MockProxy<AddAccountRepository>
   let fakeAccountData: AddAccountRepository.Params
   let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
@@ -16,14 +14,8 @@ describe('DbAddAccount Usecase', () => {
     fakeLoadAccount.loadByEmail.mockResolvedValue(null)
     encrypt = mock()
     encrypt.hash.mockResolvedValue('hashed_password')
-    fakeAccount = {
-      id: 'valid_id',
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'hashed_password'
-    }
     fakeAccountRepository = mock()
-    fakeAccountRepository.add.mockResolvedValue(fakeAccount)
+    fakeAccountRepository.add.mockResolvedValue(true)
     fakeAccountData = {
       name: 'valid_name',
       email: 'valid_email@mail.com',
@@ -77,6 +69,14 @@ describe('DbAddAccount Usecase', () => {
     expect(isValid).toBeTruthy()
   })
 
+  it('Should return false if AddAccountRepository returns false', async () => {
+    fakeAccountRepository.add.mockResolvedValueOnce(false)
+
+    const isValid = await sut.add(fakeAccountData)
+
+    expect(isValid).toBeFalsy()
+  })
+
   it('Should call LoadAccountByEmailRepository with correct email', async () => {
     await sut.add(fakeAccountData)
 
@@ -84,6 +84,11 @@ describe('DbAddAccount Usecase', () => {
   })
 
   it('Should return undefined if LoadAccountByEmailRepository not returns undefined', async () => {
+    const fakeAccount = {
+      id: 'valid_id',
+      name: 'valid_name',
+      password: 'hashed_password'
+    }
     fakeLoadAccount.loadByEmail.mockResolvedValueOnce(fakeAccount)
 
     const account = await sut.add(fakeAccountData)

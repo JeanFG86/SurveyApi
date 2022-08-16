@@ -1,7 +1,6 @@
 import { MongoHelper } from '@/infra/db/mongodb/helpers'
 import { Collection, ObjectId } from 'mongodb'
 import { SurveyMongoRepository } from '@/infra/db/mongodb/survey'
-import { AccountModel } from '@/domain/models'
 
 describe('Survey Mongo Repository', () => {
   let surveyCollection: Collection
@@ -9,7 +8,7 @@ describe('Survey Mongo Repository', () => {
   let surveyResultCollection: Collection
   let accountCollection: Collection
 
-  const makeAccount = async (): Promise<AccountModel | undefined> => {
+  const makeAccountId = async (): Promise<string | undefined> => {
     const result = await accountCollection.insertOne({
       id: 'any_id',
       name: 'any_name',
@@ -20,13 +19,7 @@ describe('Survey Mongo Repository', () => {
     const account = await accountCollection.findOne(result.insertedId)
 
     if (account !== null) {
-      const accountReturn = {
-        id: account._id.toString(),
-        name: account.name.toString(),
-        email: account.email.toString(),
-        password: account.password.toString()
-      }
-      return accountReturn
+      return account._id.toString()
     }
   }
 
@@ -69,7 +62,7 @@ describe('Survey Mongo Repository', () => {
 
   describe('loadAll', () => {
     it('Should loadAll surveys on success', async () => {
-      const account = await makeAccount()
+      const accountId = await makeAccountId()
       const result = await surveyCollection.insertMany([{
         question: 'any_question',
         answers: [{
@@ -95,11 +88,11 @@ describe('Survey Mongo Repository', () => {
         {
           date: new Date(),
           surveyId: new ObjectId(survey!.id),
-          accountId: new ObjectId(account!.id),
+          accountId: new ObjectId(accountId),
           answer: survey!.answers[0].answer
         }
       )
-      const surveys = await sut.loadAll(account!.id)
+      const surveys = await sut.loadAll(accountId!)
 
       expect(surveys.length).toBe(2)
       expect(surveys[0].id).toBeTruthy()
@@ -110,8 +103,8 @@ describe('Survey Mongo Repository', () => {
     })
 
     it('Should load empty list', async () => {
-      const account = await makeAccount()
-      const surveys = await sut.loadAll(account!.id)
+      const accountId = await makeAccountId()
+      const surveys = await sut.loadAll(accountId!)
 
       expect(surveys.length).toBe(0)
     })

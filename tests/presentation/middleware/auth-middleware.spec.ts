@@ -3,23 +3,16 @@ import { AccessDeniedError } from '@/presentation/errors'
 import { AuthMiddleware } from '@/presentation/middlewares'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { LoadAccountByToken } from '@/domain/usecases'
-import { AccountModel } from '@/domain/models'
 
 describe('Auth Middleware', () => {
   let sut: AuthMiddleware
   let fakeLoadAccountByToken: MockProxy<LoadAccountByToken>
-  let fakeAccount: AccountModel
   let fakeRequest: AuthMiddleware.Request
   let role: string
   beforeAll(() => {
     fakeLoadAccountByToken = mock()
-    fakeAccount = {
-      id: 'valid_id',
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'hashed_password'
-    }
-    fakeLoadAccountByToken.load.mockResolvedValue(fakeAccount)
+
+    fakeLoadAccountByToken.load.mockResolvedValue({ id: 'valid_id' })
 
     fakeRequest = {
       accessToken: 'any_token'

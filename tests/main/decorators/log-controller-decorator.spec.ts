@@ -1,5 +1,4 @@
 import { LogErrorRepository } from '@/data/protocols/db/log'
-import { AccountModel } from '@/domain/models'
 import { LogControllerDecorator } from '@/main/decorators'
 import { ok, serverError } from '@/presentation/helpers/http'
 import { Controller } from '@/presentation/protocols'
@@ -10,18 +9,11 @@ describe('LogController Decorator', () => {
   let fakeController: MockProxy<Controller>
   let fakeLogErrorRepository: MockProxy<LogErrorRepository>
   let fakeRequest: any
-  let fakeAccount: MockProxy<AccountModel>
   let fakeError: Error
 
   beforeAll(() => {
-    fakeAccount = {
-      id: 'any_id',
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password'
-    }
     fakeController = mock()
-    fakeController.handle.mockResolvedValue(ok(fakeAccount))
+    fakeController.handle.mockResolvedValue(ok({ id: 'any_id' }))
     fakeLogErrorRepository = mock()
     fakeLogErrorRepository.logError.mockResolvedValue(new Promise(resolve => resolve()))
     fakeRequest = {
@@ -49,7 +41,7 @@ describe('LogController Decorator', () => {
   it('Should return the same result of the controller', async () => {
     const httpResponse = await sut.handle(fakeRequest)
 
-    expect(httpResponse).toEqual(ok(fakeAccount))
+    expect(httpResponse).toEqual(ok({ id: 'any_id' }))
   })
 
   it('Should call LogErrorRepository with correct error if controller returns a server error', async () => {

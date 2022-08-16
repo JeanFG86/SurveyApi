@@ -1,25 +1,17 @@
 import { Decrypter } from '@/data/protocols/criptograpfy'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { DbLoadAccountByToken } from '@/data/usecases/account/load-account-by-token'
-import { AccountModel } from '@/domain/models'
 import { LoadAccountByTokenRepository } from '@/data/protocols/db/account'
 
 describe('DbLoadAccountByToken Usecase', () => {
   let sut: DbLoadAccountByToken
   let fakeDecrypter: MockProxy<Decrypter>
   let fakeLoadAccountRepository: MockProxy<LoadAccountByTokenRepository>
-  let fakeAccount: MockProxy<AccountModel>
   beforeAll(() => {
-    fakeAccount = {
-      id: 'valid_id',
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'hashed_password'
-    }
     fakeDecrypter = mock()
     fakeDecrypter.decrypt.mockResolvedValue('any_token')
     fakeLoadAccountRepository = mock()
-    fakeLoadAccountRepository.loadByToken.mockResolvedValue(fakeAccount)
+    fakeLoadAccountRepository.loadByToken.mockResolvedValue({ id: 'any_id' })
   })
 
   beforeEach(() => {
@@ -69,7 +61,7 @@ describe('DbLoadAccountByToken Usecase', () => {
   it('Should return an account on success', async () => {
     const account = await sut.load({ accessToken: 'any_token', role: 'any_role' })
 
-    expect(account).toEqual(fakeAccount)
+    expect(account).toEqual({ id: 'any_id' })
   })
 
   it('Should throw LoadAccountByTokenRepository throws', async () => {
