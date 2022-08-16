@@ -10,7 +10,7 @@ describe('DbAuthentication UseCase', () => {
   let fakeEncrypter: MockProxy<Encrypter>
   let fakeUpdateAccessTokenRepo: MockProxy<UpdateAccessTokenRepository>
   let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
-  let fakeAuthentication: MockProxy<Authentication.Input>
+  let fakeAuthentication: MockProxy<Authentication.Params>
   beforeAll(() => {
     fakeAuthentication = {
       email: 'any_email@mail.com',
