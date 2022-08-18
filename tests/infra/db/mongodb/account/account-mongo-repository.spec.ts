@@ -54,6 +54,26 @@ describe('Account Mongo Repository', () => {
     })
   })
 
+  describe('CheckByEmail', () => {
+    it('Should return true if email is valid', async () => {
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password'
+      })
+
+      const exists = await sut.checkByEmail('any_email@mail.com')
+
+      expect(exists).toBeTruthy()
+    })
+
+    it('Should return false if email is invalid', async () => {
+      const exists = await sut.loadByEmail('any_email@mail.com')
+
+      expect(exists).toBeFalsy()
+    })
+  })
+
   describe('UpdateAccessToken', () => {
     it('Should update the account accessToken on updateAccessToken success', async () => {
       const res = await accountCollection.insertOne({

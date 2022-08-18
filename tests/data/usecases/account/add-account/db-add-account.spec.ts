@@ -1,4 +1,4 @@
-import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/protocols/db/account'
+import { AddAccountRepository, CheckAccountByEmailRepository } from '@/data/protocols/db/account'
 import { Hasher } from '@/data/protocols/criptograpfy'
 import { DbAddAccount } from '@/data/usecases/account/add-account'
 import { mock, MockProxy } from 'jest-mock-extended'
@@ -8,10 +8,10 @@ describe('DbAddAccount Usecase', () => {
   let encrypt: MockProxy<Hasher>
   let fakeAccountRepository: MockProxy<AddAccountRepository>
   let fakeAccountData: AddAccountRepository.Params
-  let fakeLoadAccount: MockProxy<LoadAccountByEmailRepository>
+  let fakeCkeckEmailAccount: MockProxy<CheckAccountByEmailRepository>
   beforeAll(() => {
-    fakeLoadAccount = mock()
-    fakeLoadAccount.loadByEmail.mockResolvedValue(null)
+    fakeCkeckEmailAccount = mock()
+    fakeCkeckEmailAccount.checkByEmail.mockResolvedValue(false)
     encrypt = mock()
     encrypt.hash.mockResolvedValue('hashed_password')
     fakeAccountRepository = mock()
@@ -24,7 +24,7 @@ describe('DbAddAccount Usecase', () => {
   })
 
   beforeEach(() => {
-    sut = new DbAddAccount(encrypt, fakeAccountRepository, fakeLoadAccount)
+    sut = new DbAddAccount(encrypt, fakeAccountRepository, fakeCkeckEmailAccount)
   })
 
   it('Should call Hasher with correct password', async () => {
@@ -77,22 +77,23 @@ describe('DbAddAccount Usecase', () => {
     expect(isValid).toBeFalsy()
   })
 
-  it('Should call LoadAccountByEmailRepository with correct email', async () => {
+  it('Should call CkeckAccountByEmailRepository with correct email', async () => {
     await sut.add(fakeAccountData)
 
-    expect(fakeLoadAccount.loadByEmail).toHaveBeenCalledWith('valid_email@mail.com')
+    expect(fakeCkeckEmailAccount.checkByEmail).toHaveBeenCalledWith('valid_email@mail.com')
   })
 
-  it('Should return undefined if LoadAccountByEmailRepository not returns undefined', async () => {
-    const fakeAccount = {
-      id: 'valid_id',
-      name: 'valid_name',
-      password: 'hashed_password'
-    }
-    fakeLoadAccount.loadByEmail.mockResolvedValueOnce(fakeAccount)
+  it('Should return true on success', async () => {
+    const isValid = await sut.add(fakeAccountData)
 
-    const account = await sut.add(fakeAccountData)
+    expect(isValid).toBeTruthy()
+  })
 
-    expect(account).toBeUndefined()
+  it('Should return false if CkeckAccountByEmailRepository returns true', async () => {
+    fakeCkeckEmailAccount.checkByEmail.mockResolvedValueOnce(true)
+
+    const isValid = await sut.add(fakeAccountData)
+
+    expect(isValid).toBeFalsy()
   })
 })
