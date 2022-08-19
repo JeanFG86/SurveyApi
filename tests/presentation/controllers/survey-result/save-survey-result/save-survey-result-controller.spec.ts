@@ -1,36 +1,24 @@
-import { SurveyModel, SurveyResultModel } from '@/domain/models'
-import { LoadSurveyById, SaveSurveyResult } from '@/domain/usecases'
+import { SurveyResultModel } from '@/domain/models'
+import { LoadAnswersBySurvey, SaveSurveyResult } from '@/domain/usecases'
 import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result'
 import { InvalidParamError } from '@/presentation/errors'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http'
 import { mock, MockProxy } from 'jest-mock-extended'
-import MockDate from 'mockdate'
 
 describe('SaveSurveyResult Controller', () => {
   let sut: SaveSurveyResultController
   let fakeRequest: SaveSurveyResultController.Request
-  let fakeSurvey: SurveyModel
   let fakeSurveyResultModel: SurveyResultModel
-  let fakeLoadSurveyById: MockProxy<LoadSurveyById>
+  let fakeLoadAnswersBySurvey: MockProxy<LoadAnswersBySurvey>
   let fakeSaveSurveyResult: MockProxy<SaveSurveyResult>
 
   beforeAll(() => {
-    MockDate.set(new Date())
-    fakeLoadSurveyById = mock()
+    fakeLoadAnswersBySurvey = mock()
     fakeSaveSurveyResult = mock()
     fakeRequest = {
       surveyId: 'any_survey_id',
       answer: 'any_answer',
       accountId: 'any_account_id'
-    }
-    fakeSurvey = {
-      id: 'any_id',
-      question: 'any_question',
-      answers: [{
-        image: 'any_image',
-        answer: 'any_answer'
-      }],
-      date: new Date()
     }
     fakeSurveyResultModel = {
       surveyId: 'any_survey_id',
@@ -50,28 +38,24 @@ describe('SaveSurveyResult Controller', () => {
       }],
       date: new Date()
     }
-    fakeLoadSurveyById.loadById.mockResolvedValue(fakeSurvey)
+    fakeLoadAnswersBySurvey.loadAnswers.mockResolvedValue(['any_answer', 'other_answer'])
     fakeSaveSurveyResult.save.mockResolvedValue(fakeSurveyResultModel)
   })
 
   beforeEach(() => {
-    sut = new SaveSurveyResultController(fakeLoadSurveyById, fakeSaveSurveyResult)
+    sut = new SaveSurveyResultController(fakeLoadAnswersBySurvey, fakeSaveSurveyResult)
   })
 
-  afterAll(() => {
-    MockDate.reset()
-  })
-
-  it('Should call LoadSurveyById with correct values', async () => {
-    const loadByIdSpy = jest.spyOn(fakeLoadSurveyById, 'loadById')
+  it('Should call LoadAnswersBySurvey with correct values', async () => {
+    const loadByIdSpy = jest.spyOn(fakeLoadAnswersBySurvey, 'loadAnswers')
 
     await sut.handle(fakeRequest)
 
     expect(loadByIdSpy).toBeCalledWith('any_survey_id')
   })
 
-  it('Should return 403 if LoadSurveyById returns null', async () => {
-    fakeLoadSurveyById.loadById.mockResolvedValueOnce(undefined)
+  it('Should return 403 if LoadSurveyById returns undefined', async () => {
+    fakeLoadAnswersBySurvey.loadAnswers.mockResolvedValueOnce([])
 
     const httpResponse = await sut.handle(fakeRequest)
 
@@ -79,7 +63,7 @@ describe('SaveSurveyResult Controller', () => {
   })
 
   it('Should return 500 if LoadSurveyById throws', async () => {
-    fakeLoadSurveyById.loadById.mockRejectedValueOnce(new Error())
+    fakeLoadAnswersBySurvey.loadAnswers.mockRejectedValueOnce(new Error())
 
     const httpResponse = await sut.handle(fakeRequest)
 
