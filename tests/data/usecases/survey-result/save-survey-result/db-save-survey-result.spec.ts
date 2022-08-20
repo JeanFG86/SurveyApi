@@ -1,6 +1,6 @@
 import { LoadSurveyResultRepository, SaveSurveyResultRepository } from '@/data/protocols/db/survey-result'
 import { SurveyResultModel } from '@/domain/models'
-import { SaveSurveyResultParams } from '@/domain/usecases'
+import { SaveSurveyResult } from '@/domain/usecases'
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 import { DbSaveSurveyResult } from '@/data/usecases/survey-result/save-survey-result'
@@ -8,7 +8,7 @@ import { DbSaveSurveyResult } from '@/data/usecases/survey-result/save-survey-re
 describe('DbSaveSurveyResult UseCase', () => {
   let sut: DbSaveSurveyResult
   let fakeSurveyResult: SurveyResultModel
-  let fakeSaveSurveyResult: SaveSurveyResultParams
+  let fakeSaveSurveyResult: SaveSurveyResult.Params
   let fakeSaveSurveyResultRepository: MockProxy<SaveSurveyResultRepository>
   let fakeLoadSurveyResultRepository: MockProxy<LoadSurveyResultRepository>
 
