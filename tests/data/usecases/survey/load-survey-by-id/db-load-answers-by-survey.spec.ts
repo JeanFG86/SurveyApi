@@ -1,13 +1,13 @@
 import { mock, MockProxy } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 import { SurveyModel } from '@/domain/models'
-import { LoadSurveyByIdRepository } from '@/data/protocols/db/survey'
+import { LoadAnswersBySurveyRepository } from '@/data/protocols/db/survey'
 import { DbLoadAnswersBySurvey } from '@/data/usecases/survey/load-survey-by-id'
 
 describe('DbLoadAnswersBySurvey', () => {
   let sut: DbLoadAnswersBySurvey
   let fakeSurvey: SurveyModel
-  let fakeLoadSurveyByIdRepository: MockProxy<LoadSurveyByIdRepository>
+  let fakeLoadAnswersBySurveyRepository: MockProxy<LoadAnswersBySurveyRepository>
 
   beforeAll(() => {
     MockDate.set(new Date())
@@ -24,12 +24,12 @@ describe('DbLoadAnswersBySurvey', () => {
       }],
       date: new Date()
     }
-    fakeLoadSurveyByIdRepository = mock()
-    fakeLoadSurveyByIdRepository.loadById.mockResolvedValue(fakeSurvey)
+    fakeLoadAnswersBySurveyRepository = mock()
+    fakeLoadAnswersBySurveyRepository.loadAnswers.mockResolvedValue(['any_answer', 'other_answer'])
   })
 
   beforeEach(() => {
-    sut = new DbLoadAnswersBySurvey(fakeLoadSurveyByIdRepository)
+    sut = new DbLoadAnswersBySurvey(fakeLoadAnswersBySurveyRepository)
   })
 
   afterAll(() => {
@@ -37,7 +37,7 @@ describe('DbLoadAnswersBySurvey', () => {
   })
 
   it('Should call LoadSurveyByIdRepository with correct id', async () => {
-    const loadByIdSpy = jest.spyOn(fakeLoadSurveyByIdRepository, 'loadById')
+    const loadByIdSpy = jest.spyOn(fakeLoadAnswersBySurveyRepository, 'loadAnswers')
 
     await sut.loadAnswers('any_id')
 
@@ -50,15 +50,15 @@ describe('DbLoadAnswersBySurvey', () => {
     expect(answer).toEqual([fakeSurvey.answers[0].answer, fakeSurvey.answers[1].answer])
   })
 
-  it('Should return empty array if LoadSurveyByIdRepository returns undefined', async () => {
-    fakeLoadSurveyByIdRepository.loadById.mockResolvedValueOnce(undefined)
+  it('Should return empty array if LoadSurveyByIdRepository returns []', async () => {
+    fakeLoadAnswersBySurveyRepository.loadAnswers.mockResolvedValueOnce([])
     const answer = await sut.loadAnswers('any_id')
 
     expect(answer).toEqual([])
   })
 
   it('Should throw LoadSurveyByIdRepository throws', async () => {
-    fakeLoadSurveyByIdRepository.loadById.mockRejectedValueOnce(new Error())
+    fakeLoadAnswersBySurveyRepository.loadAnswers.mockRejectedValueOnce(new Error())
 
     const promise = sut.loadAnswers('any_id')
 
